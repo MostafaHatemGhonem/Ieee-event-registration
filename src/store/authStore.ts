@@ -18,8 +18,8 @@ interface AuthState {
   setUser: (user: User, token: string) => void;
 }
 
-// API Base URL
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+// API Base URL - Using production API
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://ieeebns.runasp.net/api';
 
 export const useAuthStore = create<AuthState>()(
   persist(
