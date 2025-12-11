@@ -90,8 +90,7 @@ const Login = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="admin@example.com أو Admin"
                 required
-                className="text-right"
-                dir="ltr"
+                className="text"
               /></div>
             </div>
 
