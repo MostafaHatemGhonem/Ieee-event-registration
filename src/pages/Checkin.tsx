@@ -23,8 +23,7 @@ const Checkin = () => {
     message: string;
   } | null>(null);
   const [recentCheckins, setRecentCheckins] = useState<RegistrationData[]>([]);
-  const [isScanning, setIsScanning] = useState(false);
-  const [useCamera, setUseCamera] = useState(false); // Toggle between camera and simulation
+  const [useCamera, setUseCamera] = useState(false); // Toggle between camera and manual entry
   
   // Handle QR code scan
   const handleQRScan = async (qrData: string) => {
@@ -166,32 +165,6 @@ const Checkin = () => {
     }
   };
 
-  const simulateScan = async () => {
-    setIsScanning(true);
-    // Simulate scanning - in production, this would use a camera API
-    setTimeout(async () => {
-      setIsScanning(false);
-      try {
-        const registrations = await getAllRegistrations();
-        const approved = registrations.filter(r => r.status === 'approved');
-        if (approved.length > 0) {
-          const randomReg = approved[Math.floor(Math.random() * approved.length)];
-          await processCheckIn(randomReg);
-        } else {
-          setScanResult({
-            success: false,
-            message: 'No approved registrations found for demo.'
-          });
-        }
-      } catch (error) {
-        setScanResult({
-          success: false,
-          message: 'Failed to load registrations.'
-        });
-      }
-    }, 2000);
-  };
-
   const clearResult = () => {
     setScanResult(null);
   };
@@ -232,32 +205,53 @@ const Checkin = () => {
               
               <div 
                 className={`relative aspect-square max-w-sm mx-auto rounded-2xl overflow-hidden border-4 ${
-                  isScanning ? 'border-accent pulse-glow' : 'border-border'
+                  useCamera ? 'border-accent pulse-glow' : 'border-border'
                 }`}
               >
-                <div className="absolute inset-0 bg-ieee-dark flex items-center justify-center">
-                  {isScanning ? (
-                    <div className="text-center">
-                      <div className="w-16 h-16 border-4 border-accent border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-                      <p className="text-primary-foreground">Scanning...</p>
-                    </div>
-                  ) : (
+                {useCamera ? (
+                  <>
+                    {/* Real Camera Scanner */}
+                    <QRScanner 
+                      onScan={handleQRScan}
+                      onError={(err) => {
+                        console.error('Camera error:', err);
+                        toast({
+                          title: "خطأ في الكاميرا",
+                          description: "تأكد من السماح بالوصول للكاميرا",
+                          variant: "destructive"
+                        });
+                      }}
+                    />
+                    
+                    {/* Scanner overlay corners */}
+                    <div className="absolute top-4 left-4 w-8 h-8 border-t-4 border-l-4 border-accent rounded-tl-lg pointer-events-none" />
+                    <div className="absolute top-4 right-4 w-8 h-8 border-t-4 border-r-4 border-accent rounded-tr-lg pointer-events-none" />
+                    <div className="absolute bottom-4 left-4 w-8 h-8 border-b-4 border-l-4 border-accent rounded-bl-lg pointer-events-none" />
+                    <div className="absolute bottom-4 right-4 w-8 h-8 border-b-4 border-r-4 border-accent rounded-br-lg pointer-events-none" />
+                    
+                    {/* Close Camera Button */}
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      className="absolute top-2 left-2 z-10"
+                      onClick={() => setUseCamera(false)}
+                    >
+                      <XCircle className="w-4 h-4 mr-1" />
+                      Close Camera
+                    </Button>
+                  </>
+                ) : (
+                  <div className="absolute inset-0 bg-ieee-dark flex items-center justify-center">
                     <div className="text-center p-8">
                       <Camera className="w-16 h-16 mx-auto mb-4 text-muted-foreground" />
-                      <p className="text-muted-foreground mb-4">Camera preview would appear here</p>
-                      <Button variant="gradient" onClick={simulateScan}>
-                        <QrCode className="w-4 h-4 mr-2" />
-                        Simulate Scan
+                      <p className="text-muted-foreground mb-4">Click to activate camera</p>
+                      <Button variant="gradient" onClick={() => setUseCamera(true)}>
+                        <Camera className="w-4 h-4 mr-2" />
+                        Start Camera
                       </Button>
                     </div>
-                  )}
-                </div>
-                
-                {/* Scanner overlay corners */}
-                <div className="absolute top-4 left-4 w-8 h-8 border-t-4 border-l-4 border-accent rounded-tl-lg" />
-                <div className="absolute top-4 right-4 w-8 h-8 border-t-4 border-r-4 border-accent rounded-tr-lg" />
-                <div className="absolute bottom-4 left-4 w-8 h-8 border-b-4 border-l-4 border-accent rounded-bl-lg" />
-                <div className="absolute bottom-4 right-4 w-8 h-8 border-b-4 border-r-4 border-accent rounded-br-lg" />
+                  </div>
+                )}
               </div>
 
               {/* Manual Entry */}

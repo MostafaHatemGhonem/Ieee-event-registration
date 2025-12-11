@@ -145,9 +145,9 @@ export async function getAllRegistrations(): Promise<RegistrationData[]> {
     faculty: item.college || item.faculty || '', // Backend uses "college"
     academicYear: item.academicYear || '',
     paymentCode: item.paymentCode || '',
-    paymentScreenshot: item.paymentImagePath ? `https://ieeebns.runasp.net/${item.paymentImagePath.replace(/\\/g, '/')}` : undefined, // Convert path to URL
+    paymentScreenshot: item.paymentImagePath ? `http://ieeebns.runasp.net/${item.paymentImagePath.replace(/\\/g, '/')}` : undefined, // Convert path to URL (HTTP until backend fixes HTTPS)
     status: item.status?.toLowerCase() || 'pending', // Backend sends "Pending" (capital), convert to lowercase
-    qrCode: item.qrCodePath ? `https://ieeebns.runasp.net/${item.qrCodePath}` : undefined,
+    qrCode: item.qrCodePath ? `http://ieeebns.runasp.net/${item.qrCodePath}` : undefined,
     rejectionReason: item.rejectionReason,
     createdAt: item.createdAt,
     checkedIn: !!item.checkInTime,
