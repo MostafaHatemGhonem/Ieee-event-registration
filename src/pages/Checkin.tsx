@@ -209,7 +209,7 @@ const Checkin = () => {
                 }`}
               >
                 {useCamera ? (
-                  <>
+                  <div className="relative">
                     {/* Real Camera Scanner */}
                     <QRScanner 
                       onScan={handleQRScan}
@@ -220,26 +220,21 @@ const Checkin = () => {
                           description: "تأكد من السماح بالوصول للكاميرا",
                           variant: "destructive"
                         });
+                        setUseCamera(false); // Close camera on error
                       }}
                     />
-                    
-                    {/* Scanner overlay corners */}
-                    <div className="absolute top-4 left-4 w-8 h-8 border-t-4 border-l-4 border-accent rounded-tl-lg pointer-events-none" />
-                    <div className="absolute top-4 right-4 w-8 h-8 border-t-4 border-r-4 border-accent rounded-tr-lg pointer-events-none" />
-                    <div className="absolute bottom-4 left-4 w-8 h-8 border-b-4 border-l-4 border-accent rounded-bl-lg pointer-events-none" />
-                    <div className="absolute bottom-4 right-4 w-8 h-8 border-b-4 border-r-4 border-accent rounded-br-lg pointer-events-none" />
                     
                     {/* Close Camera Button */}
                     <Button 
                       variant="outline" 
                       size="sm"
-                      className="absolute top-2 left-2 z-10"
+                      className="absolute top-2 left-2 z-10 bg-white"
                       onClick={() => setUseCamera(false)}
                     >
                       <XCircle className="w-4 h-4 mr-1" />
                       Close Camera
                     </Button>
-                  </>
+                  </div>
                 ) : (
                   <div className="absolute inset-0 bg-ieee-dark flex items-center justify-center">
                     <div className="text-center p-8">

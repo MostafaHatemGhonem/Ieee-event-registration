@@ -1,59 +1,62 @@
-import { useState } from 'react';
-import QrScanner from 'react-qr-scanner';
+import { useEffect, useRef } from 'react';
+import { Html5Qrcode } from 'html5-qrcode';
 
 interface QRScannerProps {
   onScan: (data: string) => void;
-  onError?: (error: Error) => void;
+  onError?: (error: string) => void;
 }
 
 export function QRScanner({ onScan, onError }: QRScannerProps) {
-  const [facingMode, setFacingMode] = useState<'user' | 'environment'>('environment');
+  const scannerRef = useRef<Html5Qrcode | null>(null);
+  const isScanning = useRef(false);
 
-  const handleScan = (data: any) => {
-    if (data && data.text) {
-      onScan(data.text);
-    }
-  };
+  useEffect(() => {
+    const scanner = new Html5Qrcode("qr-reader");
+    scannerRef.current = scanner;
 
-  const handleError = (error: any) => {
-    console.error('QR Scanner Error:', error);
-    if (onError) {
-      onError(error);
-    }
-  };
+    const startScanner = async () => {
+      if (isScanning.current) return;
 
-  const toggleCamera = () => {
-    setFacingMode(prev => prev === 'user' ? 'environment' : 'user');
-  };
+      try {
+        await scanner.start(
+          { facingMode: "environment" }, // Use back camera
+          {
+            fps: 10,
+            qrbox: { width: 250, height: 250 },
+          },
+          (decodedText) => {
+            // Success callback
+            onScan(decodedText);
+          },
+          (errorMessage) => {
+            // Error callback (usually just no QR detected)
+            // We don't need to show this error
+          }
+        );
+        isScanning.current = true;
+      } catch (err: any) {
+        console.error("Failed to start scanner:", err);
+        if (onError) {
+          onError(err?.message || "Failed to start camera");
+        }
+      }
+    };
+
+    startScanner();
+
+    return () => {
+      if (scannerRef.current && isScanning.current) {
+        scannerRef.current
+          .stop()
+          .then(() => {
+            isScanning.current = false;
+          })
+          .catch((err) => console.error("Failed to stop scanner:", err));
+      }
+    };
+  }, [onScan, onError]);
 
   return (
-    <div className="relative">
-      <QrScanner
-        delay={300}
-        onError={handleError}
-        onScan={handleScan}
-        constraints={{
-          audio: false,
-          video: { facingMode: facingMode }
-        }}
-        style={{ width: '100%' }}
-      />
-      
-      {/* Camera toggle button */}
-      <button
-        onClick={toggleCamera}
-        className="absolute bottom-4 right-4 bg-white/90 hover:bg-white p-3 rounded-full shadow-lg transition-all"
-        title="Toggle Camera"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-          <polyline points="7.5 4.21 12 6.81 16.5 4.21"></polyline>
-          <polyline points="7.5 19.79 7.5 14.6 3 12"></polyline>
-          <polyline points="21 12 16.5 14.6 16.5 19.79"></polyline>
-          <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-          <line x1="12" y1="22.08" x2="12" y2="12"></line>
-        </svg>
-      </button>
-    </div>
+    <div id="qr-reader" style={{ width: '100%' }}></div>
   );
 }
