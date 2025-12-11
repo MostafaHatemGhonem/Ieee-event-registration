@@ -1,6 +1,6 @@
 import { RegistrationData } from '@/types/registration';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://ieeebns.runasp.net/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://ieeebns.runasp.net/api';
 
 async function apiRequest<T>(
   endpoint: string,
@@ -145,9 +145,9 @@ export async function getAllRegistrations(): Promise<RegistrationData[]> {
     faculty: item.college || item.faculty || '', // Backend uses "college"
     academicYear: item.academicYear || '',
     paymentCode: item.paymentCode || '',
-    paymentScreenshot: item.paymentImagePath ? `http://ieeebns.runasp.net/${item.paymentImagePath.replace(/\\/g, '/')}` : undefined, // Convert path to URL
+    paymentScreenshot: item.paymentImagePath ? `https://ieeebns.runasp.net/${item.paymentImagePath.replace(/\\/g, '/')}` : undefined, // Convert path to URL
     status: item.status?.toLowerCase() || 'pending', // Backend sends "Pending" (capital), convert to lowercase
-    qrCode: item.qrCodePath ? `http://ieeebns.runasp.net/${item.qrCodePath}` : undefined,
+    qrCode: item.qrCodePath ? `https://ieeebns.runasp.net/${item.qrCodePath}` : undefined,
     rejectionReason: item.rejectionReason,
     createdAt: item.createdAt,
     checkedIn: !!item.checkInTime,
@@ -173,11 +173,15 @@ export async function rejectRegistration(id: string, reason?: string): Promise<a
 
 // ==================== Check-in APIs ====================
 
-export async function checkInAttendee(id: string): Promise<any> {
+export async function checkInAttendee(id: string, nationalId?: string): Promise<any> {
     // User request: http://ieeebns.runasp.net/api/Checkin
+    // Backend accepts both attendeeId and nationalId
   return apiRequest('/Checkin', {
     method: 'POST',
-    body: JSON.stringify({ attendeeId: id }) // Assuming body expects ID
+    body: JSON.stringify({ 
+      attendeeId: id,
+      nationalId: nationalId 
+    })
   });
 }
 

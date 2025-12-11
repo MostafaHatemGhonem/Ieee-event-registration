@@ -139,7 +139,8 @@ const Checkin = () => {
     // Perform check-in
     if (registration.id) {
       try {
-        await checkInAttendee(registration.id);
+        // Send both attendeeId and nationalId to backend
+        await checkInAttendee(registration.id, registration.nationalId);
         const updated = { ...registration, checkedIn: true, checkedInAt: new Date().toISOString() };
         setScanResult({
           success: true,
