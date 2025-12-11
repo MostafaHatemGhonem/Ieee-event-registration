@@ -6,6 +6,7 @@ import { toast } from '@/hooks/use-toast';
 import { getAllRegistrations, checkInAttendee } from '@/services/api';
 import { RegistrationData } from '@/types/registration';
 import { QRScanner } from '@/components/QRScanner';
+import { extractAttendeeIdFromQR, isValidIEEEQRCode } from '@/lib/qrcode-generator';
 import ieeeLogo from '@/assets/ieee-logo.png';
 import { 
   QrCode, CheckCircle2, XCircle, ArrowLeft, 
@@ -29,13 +30,34 @@ const Checkin = () => {
   const handleQRScan = async (qrData: string) => {
     if (!qrData) return;
     
-    // Extract ID from QR data (format: IEEE-BSU-{id})
-    const idMatch = qrData.match(/IEEE-BSU-(.+)/);
-    const attendeeId = idMatch ? idMatch[1] : qrData;
+    // Validate QR code format
+    if (!isValidIEEEQRCode(qrData)) {
+      toast({
+        title: "خطأ في الرمز",
+        description: "رمز QR غير صالح. يرجى التأكد من استخدام الرمز الصحيح للفعالية",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    // Extract ID from QR data (format: IEEE-BSU-{nationalId-timestamp})
+    const extractedData = extractAttendeeIdFromQR(qrData);
+    if (!extractedData) {
+      toast({
+        title: "خطأ",
+        description: "فشل قراءة البيانات من رمز QR",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    // Extract national ID from the extracted data (format: nationalId-timestamp)
+    const nationalId = extractedData.split('-')[0];
     
     try {
       const registrations = await getAllRegistrations();
-      const found = registrations.find(r => r.id === attendeeId);
+      // Find by national ID instead of just ID
+      const found = registrations.find(r => r.nationalId === nationalId);
       await processCheckIn(found);
     } catch (error) {
       toast({

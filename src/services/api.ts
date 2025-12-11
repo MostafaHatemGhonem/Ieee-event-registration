@@ -55,7 +55,8 @@ async function apiRequest<T>(
 
 export async function submitRegistration(
   data: Omit<RegistrationData, 'id' | 'status' | 'createdAt'>,
-  paymentImage?: File
+  paymentImage?: File,
+  qrCodeBlob?: Blob
 ): Promise<any> {
   const formData = new FormData();
   
@@ -84,6 +85,11 @@ export async function submitRegistration(
   
   if (paymentImage) {
     formData.append('PaymentImage', paymentImage);
+  }
+
+  // Add QR Code image if provided
+  if (qrCodeBlob) {
+    formData.append('QRCodeImage', qrCodeBlob, 'qrcode.png');
   }
 
   const response = await fetch(`${API_BASE_URL}/Auth/register`, {

@@ -29,43 +29,38 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
 
       login: async (email: string, password: string) => {
-        // Check if demo credentials
-        const isDemoLogin = email === 'mostafahatemghone@gmail.com' && password === '12345678';
-        
-        // Try login with retry logic
         try {
           const response = await fetch(`${API_BASE_URL}/Auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password }),
+            body: JSON.stringify({ username: email, password }), // Backend expects 'username' not 'email'
           });
 
           if (!response.ok) {
-            // If backend fails and credentials are demo, create a demo session
-            if (isDemoLogin) {
-              const demoUser = {
-                id: 'demo-admin-123',
-                email: email,
-                name: 'Mostafa Hatem (Demo)',
-                role: 'admin' as const,
-              };
-              const demoToken = 'demo-token-' + Date.now();
-              
-              set({
-                user: demoUser,
-                token: demoToken,
-                isAuthenticated: true,
-              });
-              
-              localStorage.setItem('auth_token', demoToken);
-              return;
+            const contentType = response.headers.get("content-type");
+            let errorMessage = 'فشل تسجيل الدخول';
+            
+            if (contentType && contentType.indexOf("application/json") !== -1) {
+              const error = await response.json();
+              errorMessage = error.message || errorMessage;
+            } else {
+              const textError = await response.text();
+              errorMessage = textError || errorMessage;
             }
             
-            const error = await response.json();
-            throw new Error(error.message || 'فشل تسجيل الدخول');
+            throw new Error(errorMessage);
           }
 
-          const data = await response.json();
+          const contentType = response.headers.get("content-type");
+          let data;
+          
+          if (contentType && contentType.indexOf("application/json") !== -1) {
+            data = await response.json();
+          } else {
+            // If backend returns just a token as text
+            const token = await response.text();
+            data = { token, user: { id: email, email, name: email, role: 'admin' } };
+          }
           
           set({
             user: data.user,
@@ -76,26 +71,6 @@ export const useAuthStore = create<AuthState>()(
           // حفظ التوكن في localStorage
           localStorage.setItem('auth_token', data.token);
         } catch (error) {
-          // Fallback to demo login if backend is down and credentials match
-          if (isDemoLogin) {
-            const demoUser = {
-              id: 'demo-admin-123',
-              email: email,
-              name: 'Mostafa Hatem (Demo)',
-              role: 'admin' as const,
-            };
-            const demoToken = 'demo-token-' + Date.now();
-            
-            set({
-              user: demoUser,
-              token: demoToken,
-              isAuthenticated: true,
-            });
-            
-            localStorage.setItem('auth_token', demoToken);
-            return;
-          }
-          
           throw error;
         }
       },

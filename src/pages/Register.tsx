@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { toast } from '@/hooks/use-toast';
 import { submitRegistration } from '@/services/api';
 import { RegistrationData, GOVERNORATES, FACULTIES, ACADEMIC_YEARS } from '@/types/registration';
+import { generateQRCodeBlob } from '@/lib/qrcode-generator';
 import { ArrowLeft, ArrowRight, Upload, CheckCircle2, User, Phone, GraduationCap, CreditCard } from 'lucide-react';
 
 const STEP_LABELS = ['Personal Info', 'Contact', 'Academic', 'Payment'];
@@ -113,10 +114,22 @@ const Register = () => {
 
     setIsSubmitting(true);
     try {
-      // إرسال البيانات إلى الـ Backend API
+      // Generate temporary ID for QR code (using national ID + timestamp for uniqueness)
+      const tempId = `${formData.nationalId}-${Date.now()}`;
+      
+      // Generate QR Code
+      toast({
+        title: "جاري التحضير...",
+        description: "جاري إنشاء رمز QR الخاص بك",
+      });
+      
+      const qrCodeBlob = await generateQRCodeBlob(tempId);
+      
+      // إرسال البيانات إلى الـ Backend API مع QR Code
       const response = await submitRegistration(
         formData as Omit<RegistrationData, 'id' | 'status' | 'createdAt'>,
-        paymentFile || undefined
+        paymentFile || undefined,
+        qrCodeBlob
       );
       
       console.log('Registration successful:', response);
