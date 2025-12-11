@@ -39,10 +39,10 @@ const Index = () => {
                   <ArrowRight className="w-5 h-5" />
                 </Button>
               </Link>
-              <Link to="/admin">
+              <Link to="/login">
                 <Button variant="outline" size="xl" className="gap-2 w-full sm:w-auto">
                   <Shield className="w-5 h-5" />
-                  Admin Panel
+                  Admin Login
                 </Button>
               </Link>
             </div>

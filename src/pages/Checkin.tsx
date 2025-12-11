@@ -1,10 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/hooks/use-toast';
-import { getRegistrations, checkInAttendee, findRegistrationByQR } from '@/lib/registration';
+import { getAllRegistrations, checkInAttendee } from '@/services/api';
 import { RegistrationData } from '@/types/registration';
+import { QRScanner } from '@/components/QRScanner';
 import ieeeLogo from '@/assets/ieee-logo.png';
 import { 
   QrCode, CheckCircle2, XCircle, ArrowLeft, 
@@ -14,6 +15,7 @@ import {
 const Checkin = () => {
   const navigate = useNavigate();
   const [manualCode, setManualCode] = useState('');
+  const [registrations, setRegistrations] = useState<RegistrationData[]>([]);
   const [scanResult, setScanResult] = useState<{
     success: boolean;
     registration?: RegistrationData;
@@ -21,35 +23,69 @@ const Checkin = () => {
   } | null>(null);
   const [recentCheckins, setRecentCheckins] = useState<RegistrationData[]>([]);
   const [isScanning, setIsScanning] = useState(false);
+  const [useCamera, setUseCamera] = useState(false); // Toggle between camera and simulation
+  
+  // Handle QR code scan
+  const handleQRScan = async (qrData: string) => {
+    if (!qrData) return;
+    
+    // Extract ID from QR data (format: IEEE-BSU-{id})
+    const idMatch = qrData.match(/IEEE-BSU-(.+)/);
+    const attendeeId = idMatch ? idMatch[1] : qrData;
+    
+    try {
+      const registrations = await getAllRegistrations();
+      const found = registrations.find(r => r.id === attendeeId);
+      await processCheckIn(found);
+    } catch (error) {
+      toast({
+        title: "خطأ",
+        description: "فشل البحث عن التسجيل",
+        variant: "destructive"
+      });
+    }
+  };
 
   useEffect(() => {
     loadRecentCheckins();
   }, []);
 
-  const loadRecentCheckins = () => {
-    const registrations = getRegistrations();
-    const checkedIn = registrations
-      .filter(r => r.checkedIn)
-      .sort((a, b) => new Date(b.checkedInAt || 0).getTime() - new Date(a.checkedInAt || 0).getTime())
-      .slice(0, 10);
-    setRecentCheckins(checkedIn);
+  const loadRecentCheckins = async () => {
+    try {
+      const registrations = await getAllRegistrations();
+      const checkedIn = registrations
+        .filter(r => r.checkedIn)
+        .sort((a, b) => new Date(b.checkedInAt || 0).getTime() - new Date(a.checkedInAt || 0).getTime())
+        .slice(0, 10);
+      setRecentCheckins(checkedIn);
+    } catch (error) {
+      console.error('Failed to load check-ins:', error);
+    }
   };
 
-  const handleManualSearch = () => {
+  const handleManualSearch = async () => {
     if (!manualCode.trim()) return;
 
-    const registrations = getRegistrations();
-    const found = registrations.find(r => 
-      r.id === manualCode || 
-      r.paymentCode?.toLowerCase() === manualCode.toLowerCase() ||
-      r.nationalId === manualCode
-    );
+    try {
+      const registrations = await getAllRegistrations();
+      const found = registrations.find(r => 
+        r.id === manualCode || 
+        r.paymentCode?.toLowerCase() === manualCode.toLowerCase() ||
+        r.nationalId === manualCode
+      );
 
-    processCheckIn(found);
-    setManualCode('');
+      await processCheckIn(found);
+      setManualCode('');
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to search for registration",
+        variant: "destructive"
+      });
+    }
   };
 
-  const processCheckIn = (registration: RegistrationData | undefined | null) => {
+  const processCheckIn = async (registration: RegistrationData | undefined | null) => {
     if (!registration) {
       setScanResult({
         success: false,
@@ -80,35 +116,54 @@ const Checkin = () => {
 
     // Perform check-in
     if (registration.id) {
-      checkInAttendee(registration.id);
-      const updated = { ...registration, checkedIn: true, checkedInAt: new Date().toISOString() };
-      setScanResult({
-        success: true,
-        registration: updated,
-        message: 'Check-in successful! Welcome to the event.'
-      });
-      loadRecentCheckins();
-      toast({
-        title: "Check-in Successful!",
-        description: `${registration.fullNameEnglish} has been checked in.`,
-      });
+      try {
+        await checkInAttendee(registration.id);
+        const updated = { ...registration, checkedIn: true, checkedInAt: new Date().toISOString() };
+        setScanResult({
+          success: true,
+          registration: updated,
+          message: 'Check-in successful! Welcome to the event.'
+        });
+        await loadRecentCheckins();
+        toast({
+          title: "Check-in Successful!",
+          description: `${registration.fullNameEnglish} has been checked in.`,
+        });
+      } catch (error) {
+        setScanResult({
+          success: false,
+          message: 'Failed to check in. Please try again.'
+        });
+        toast({
+          title: "Error",
+          description: "Failed to check in",
+          variant: "destructive"
+        });
+      }
     }
   };
 
-  const simulateScan = () => {
+  const simulateScan = async () => {
     setIsScanning(true);
     // Simulate scanning - in production, this would use a camera API
-    setTimeout(() => {
+    setTimeout(async () => {
       setIsScanning(false);
-      const registrations = getRegistrations();
-      const approved = registrations.filter(r => r.status === 'approved');
-      if (approved.length > 0) {
-        const randomReg = approved[Math.floor(Math.random() * approved.length)];
-        processCheckIn(randomReg);
-      } else {
+      try {
+        const registrations = await getAllRegistrations();
+        const approved = registrations.filter(r => r.status === 'approved');
+        if (approved.length > 0) {
+          const randomReg = approved[Math.floor(Math.random() * approved.length)];
+          await processCheckIn(randomReg);
+        } else {
+          setScanResult({
+            success: false,
+            message: 'No approved registrations found for demo.'
+          });
+        }
+      } catch (error) {
         setScanResult({
           success: false,
-          message: 'No approved registrations found for demo.'
+          message: 'Failed to load registrations.'
         });
       }
     }, 2000);
@@ -299,7 +354,7 @@ const Checkin = () => {
                 </div>
                 <div className="text-center p-4 bg-muted rounded-lg">
                   <p className="text-3xl font-bold text-accent">
-                    {getRegistrations().filter(r => r.status === 'approved' && !r.checkedIn).length}
+                    {registrations.filter(r => r.status === 'approved' && !r.checkedIn).length}
                   </p>
                   <p className="text-sm text-muted-foreground">Remaining</p>
                 </div>

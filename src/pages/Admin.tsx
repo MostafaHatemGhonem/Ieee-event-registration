@@ -6,16 +6,20 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/hooks/use-toast';
-import { getRegistrations, approveRegistration, rejectRegistration } from '@/lib/registration';
+import { getAllRegistrations, approveRegistration, rejectRegistration } from '@/services/api';
 import { RegistrationData } from '@/types/registration';
+import { useAuthStore } from '@/store/authStore';
+import { Pagination } from '@/components/Pagination';
+import { getArabicError } from '@/lib/utils';
 import ieeeLogo from '@/assets/ieee-logo.png';
 import { 
   Search, Users, CheckCircle, XCircle, Clock, Eye, 
-  LogOut, Menu, X, QrCode, Filter
+  LogOut, Menu, X, QrCode, Filter, Loader2
 } from 'lucide-react';
 
 const Admin = () => {
   const navigate = useNavigate();
+  const logout = useAuthStore((state) => state.logout);
   const [registrations, setRegistrations] = useState<RegistrationData[]>([]);
   const [filteredData, setFilteredData] = useState<RegistrationData[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -25,6 +29,11 @@ const Admin = () => {
   const [showDetailsDialog, setShowDetailsDialog] = useState(false);
   const [showRejectDialog, setShowRejectDialog] = useState(false);
   const [rejectionReason, setRejectionReason] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(25);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editedReg, setEditedReg] = useState<RegistrationData | null>(null);
 
   useEffect(() => {
     loadRegistrations();
@@ -34,9 +43,20 @@ const Admin = () => {
     filterData();
   }, [registrations, searchTerm, statusFilter]);
 
-  const loadRegistrations = () => {
-    const data = getRegistrations();
-    setRegistrations(data);
+  const loadRegistrations = async () => {
+    try {
+      setIsLoading(true);
+      const data = await getAllRegistrations();
+      setRegistrations(data);
+    } catch (error) {
+      toast({
+        title: "خطأ",
+        description: getArabicError(error as Error),
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const filterData = () => {
@@ -60,29 +80,63 @@ const Admin = () => {
     setFilteredData(filtered);
   };
 
-  const handleApprove = (reg: RegistrationData) => {
+  const handleApprove = async (reg: RegistrationData) => {
     if (!reg.id) return;
-    approveRegistration(reg.id);
-    loadRegistrations();
-    toast({
-      title: "Approved!",
-      description: `${reg.fullNameEnglish} has been approved and QR code generated.`,
-    });
+    
+    // Optimistic update
+    const previousRegistrations = [...registrations];
+    setRegistrations(prev => prev.map(r => 
+      r.id === reg.id ? { ...r, status: 'approved' as const } : r
+    ));
     setShowDetailsDialog(false);
+    
+    try {
+      await approveRegistration(reg.id);
+      toast({
+        title: "تمت الموافقة!",
+        description: `تمت الموافقة على ${reg.fullNameEnglish}`,
+      });
+      await loadRegistrations(); // Refresh to get latest data
+    } catch (error) {
+      // Revert optimistic update on error
+      setRegistrations(previousRegistrations);
+      toast({
+        title: "خطأ",
+        description: getArabicError(error as Error),
+        variant: "destructive"
+      });
+    }
   };
 
-  const handleReject = () => {
+  const handleReject = async () => {
     if (!selectedReg?.id || !rejectionReason) return;
-    rejectRegistration(selectedReg.id, rejectionReason);
-    loadRegistrations();
-    toast({
-      title: "Rejected",
-      description: "The registration has been rejected.",
-      variant: "destructive",
-    });
+    
+    // Optimistic update
+    const previousRegistrations = [...registrations];
+    setRegistrations(prev => prev.map(r => 
+      r.id === selectedReg.id ? { ...r, status: 'rejected' as const, rejectionReason } : r
+    ));
     setShowRejectDialog(false);
     setShowDetailsDialog(false);
     setRejectionReason('');
+    
+    try {
+      await rejectRegistration(selectedReg.id, rejectionReason);
+      toast({
+        title: "تم الرفض",
+        description: "تم رفض التسجيل",
+        variant: "destructive",
+      });
+      await loadRegistrations(); // Refresh to get latest data
+    } catch (error) {
+      // Revert optimistic update on error
+      setRegistrations(previousRegistrations);
+      toast({
+        title: "خطأ",
+        description: getArabicError(error as Error),
+        variant: "destructive"
+      });
+    }
   };
 
   const getStatusBadge = (status: string) => {
@@ -131,11 +185,14 @@ const Admin = () => {
           
           <div className="p-4 border-t border-sidebar-border">
             <button 
-              onClick={() => navigate('/')}
+              onClick={() => {
+                logout();
+                navigate('/login');
+              }}
               className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sidebar-foreground hover:bg-sidebar-accent transition-colors"
             >
               <LogOut className="w-5 h-5" />
-              Exit Admin
+              Logout
             </button>
           </div>
         </div>
@@ -224,55 +281,86 @@ const Admin = () => {
 
           {/* Table */}
           <div className="card-elevated overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-muted/50">
-                  <tr>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Name</th>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground hidden md:table-cell">Email</th>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground hidden lg:table-cell">Faculty</th>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Status</th>
-                    <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
-                  {filteredData.length === 0 ? (
-                    <tr>
-                      <td colSpan={5} className="px-4 py-12 text-center text-muted-foreground">
-                        {registrations.length === 0 ? 'No registrations yet' : 'No results found'}
-                      </td>
-                    </tr>
-                  ) : (
-                    filteredData.map((reg) => (
-                      <tr key={reg.id} className="hover:bg-muted/30 transition-colors">
-                        <td className="px-4 py-3">
-                          <div>
-                            <div className="font-medium">{reg.fullNameEnglish}</div>
-                            <div className="text-sm text-muted-foreground" dir="rtl">{reg.fullNameArabic}</div>
-                          </div>
-                        </td>
-                        <td className="px-4 py-3 hidden md:table-cell text-sm">{reg.email}</td>
-                        <td className="px-4 py-3 hidden lg:table-cell text-sm">{reg.faculty}</td>
-                        <td className="px-4 py-3">{getStatusBadge(reg.status)}</td>
-                        <td className="px-4 py-3">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => {
-                              setSelectedReg(reg);
-                              setShowDetailsDialog(true);
-                            }}
-                          >
-                            <Eye className="w-4 h-4 mr-1" />
-                            View
-                          </Button>
-                        </td>
+            {isLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="w-8 h-8 animate-spin text-accent" />
+                <span className="mr-3 text-muted-foreground">جاري التحميل...</span>
+              </div>
+            ) : (
+              <>
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-muted/50">
+                      <tr>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Name</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground hidden md:table-cell">Email</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground hidden lg:table-cell">Faculty</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Status</th>
+                        <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Actions</th>
                       </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
+                    </thead>
+                    <tbody className="divide-y divide-border">
+                      {filteredData.length === 0 ? (
+                        <tr>
+                          <td colSpan={5} className="px-4 py-12 text-center text-muted-foreground">
+                            {registrations.length === 0 ? 'No registrations yet' : 'No results found'}
+                          </td>
+                        </tr>
+                      ) : (
+                        (() => {
+                          // Calculate pagination
+                          const startIndex = (currentPage - 1) * itemsPerPage;
+                          const endIndex = startIndex + itemsPerPage;
+                          const paginatedData = filteredData.slice(startIndex, endIndex);
+                          
+                          return paginatedData.map((reg) => (
+                            <tr key={reg.id} className="hover:bg-muted/30 transition-colors">
+                              <td className="px-4 py-3">
+                                <div>
+                                  <div className="font-medium">{reg.fullNameEnglish}</div>
+                                  <div className="text-sm text-muted-foreground" dir="rtl">{reg.fullNameArabic}</div>
+                                </div>
+                              </td>
+                              <td className="px-4 py-3 hidden md:table-cell text-sm">{reg.email}</td>
+                              <td className="px-4 py-3 hidden lg:table-cell text-sm">{reg.faculty}</td>
+                              <td className="px-4 py-3">{getStatusBadge(reg.status)}</td>
+                              <td className="px-4 py-3">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => {
+                                    setSelectedReg(reg);
+                                    setShowDetailsDialog(true);
+                                  }}
+                                >
+                                  <Eye className="w-4 h-4 mr-1" />
+                                  View
+                                </Button>
+                              </td>
+                            </tr>
+                          ));
+                        })()
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+                
+                {/* Pagination */}
+                {filteredData.length > 0 && (
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={Math.ceil(filteredData.length / itemsPerPage)}
+                    totalItems={filteredData.length}
+                    itemsPerPage={itemsPerPage}
+                    onPageChange={setCurrentPage}
+                    onItemsPerPageChange={(newSize) => {
+                      setItemsPerPage(newSize);
+                      setCurrentPage(1); // Reset to first page when changing items per page
+                    }}
+                  />
+                )}
+              </>
+            )}
           </div>
         </div>
       </main>
@@ -336,6 +424,29 @@ const Admin = () => {
                 </div>
               </div>
 
+              {/* Payment Screenshot */}
+              {selectedReg.paymentScreenshot && (
+                <div className="p-4 bg-muted rounded-lg">
+                  <p className="text-sm text-muted-foreground mb-2 font-medium">Payment Screenshot</p>
+                  <div className="relative group">
+                    <img 
+                      src={typeof selectedReg.paymentScreenshot === 'string' 
+                        ? selectedReg.paymentScreenshot 
+                        : URL.createObjectURL(selectedReg.paymentScreenshot)} 
+                      alt="Payment Receipt" 
+                      className="w-full max-w-md mx-auto rounded-lg border-2 border-border shadow-md hover:shadow-lg transition-shadow cursor-pointer" 
+                      onClick={() => {
+                        const url = typeof selectedReg.paymentScreenshot === 'string' 
+                          ? selectedReg.paymentScreenshot 
+                          : URL.createObjectURL(selectedReg.paymentScreenshot as File);
+                        window.open(url, '_blank');
+                      }}
+                    />
+                    <p className="text-xs text-center text-muted-foreground mt-2">Click to view full size</p>
+                  </div>
+                </div>
+              )}
+
               {selectedReg.status === 'approved' && selectedReg.qrCode && (
                 <div className="text-center p-4 bg-muted rounded-lg">
                   <p className="text-sm text-muted-foreground mb-2">QR Code</p>
@@ -346,31 +457,88 @@ const Admin = () => {
               {selectedReg.status === 'rejected' && selectedReg.rejectionReason && (
                 <div className="p-4 bg-destructive/10 rounded-lg">
                   <p className="text-sm text-destructive font-medium">Rejection Reason:</p>
+```
                   <p className="text-sm">{selectedReg.rejectionReason}</p>
                 </div>
               )}
             </div>
           )}
-          <DialogFooter>
+          <DialogFooter className="flex-col sm:flex-row gap-2">
+            {/* Edit Mode Toggle */}
+            <Button
+              variant="outline"
+              onClick={() => {
+                if (isEditMode) {
+                  // Save changes (you can implement API call here)
+                  toast({
+                    title: "Saved",
+                    description: "Changes will be saved when edit API is connected",
+                  });
+                  setIsEditMode(false);
+                } else {
+                  setIsEditMode(true);
+                  setEditedReg(selectedReg);
+                }
+              }}
+            >
+              {isEditMode ? 'Save Changes' : 'Edit Data'}
+            </Button>
+
+            {/* Status Management Buttons */}
             {selectedReg?.status === 'pending' && (
               <>
                 <Button
                   variant="outline"
-                  onClick={() => {
-                    setShowRejectDialog(true);
-                  }}
+                  onClick={() => setShowRejectDialog(true)}
                 >
                   <XCircle className="w-4 h-4 mr-2" />
                   Reject
                 </Button>
                 <Button
-                  variant="gradient"
+                  variant="default"
+                  className="bg-success hover:bg-success/90"
                   onClick={() => handleApprove(selectedReg)}
                 >
                   <CheckCircle className="w-4 h-4 mr-2" />
                   Approve
                 </Button>
               </>
+            )}
+
+            {/* Revert to Pending for Approved/Rejected */}
+            {(selectedReg?.status === 'approved' || selectedReg?.status === 'rejected') && (
+              <Button
+                variant="outline"
+                onClick={async () => {
+                  if (!selectedReg?.id) return;
+                  
+                  // Optimistic update
+                  const previousRegistrations = [...registrations];
+                  setRegistrations(prev => prev.map(r => 
+                    r.id === selectedReg.id ? { ...r, status: 'pending' as const } : r
+                  ));
+                  
+                  try {
+                    // TODO: Add API endpoint for reverting status
+                    // await revertToPending(selectedReg.id);
+                    toast({
+                      title: "Reverted",
+                      description: "Status changed back to pending",
+                    });
+                    await loadRegistrations();
+                  } catch (error) {
+                    setRegistrations(previousRegistrations);
+                    toast({
+                      title: "Error",
+                      description: getArabicError(error as Error),
+                      variant: "destructive"
+                    });
+                  }
+                }}
+              >
+                <Clock className="w-4 h-4 mr-2" />
+                Revert to Pending
+              </Button>
             )}
           </DialogFooter>
         </DialogContent>

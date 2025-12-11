@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from '@/hooks/use-toast';
-import { saveRegistration } from '@/lib/registration';
+import { submitRegistration } from '@/services/api';
 import { RegistrationData, GOVERNORATES, FACULTIES, ACADEMIC_YEARS } from '@/types/registration';
 import { ArrowLeft, ArrowRight, Upload, CheckCircle2, User, Phone, GraduationCap, CreditCard } from 'lucide-react';
 
@@ -84,9 +84,11 @@ const Register = () => {
     }
 
     if (step === 4) {
+      // كود الدفع إجباري (Backend يتطلبه)
       if (!formData.paymentCode) {
         newErrors.paymentCode = 'يرجى إدخال كود الدفع';
       }
+      // صورة الدفع إجبارية
       if (!paymentFile) {
         newErrors.paymentScreenshot = 'يرجى رفع صورة إيصال الدفع';
       }
@@ -111,17 +113,24 @@ const Register = () => {
 
     setIsSubmitting(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      saveRegistration(formData as RegistrationData);
+      // إرسال البيانات إلى الـ Backend API
+      const response = await submitRegistration(
+        formData as Omit<RegistrationData, 'id' | 'status' | 'createdAt'>,
+        paymentFile || undefined
+      );
+      
+      console.log('Registration successful:', response);
       setSubmitted(true);
+      
       toast({
         title: "تم التسجيل بنجاح!",
         description: "سيتم مراجعة طلبك وإرسال بريد إلكتروني للتأكيد",
       });
     } catch (error) {
+      console.error('Registration error:', error);
       toast({
         title: "خطأ",
-        description: "حدث خطأ أثناء التسجيل. يرجى المحاولة مرة أخرى",
+        description: error instanceof Error ? error.message : "حدث خطأ أثناء التسجيل. يرجى المحاولة مرة أخرى",
         variant: "destructive",
       });
     } finally {
@@ -183,6 +192,7 @@ const Register = () => {
                         value={formData.fullNameArabic}
                         onChange={(e) => updateField('fullNameArabic', e.target.value)}
                         className={errors.fullNameArabic ? 'border-destructive' : ''}
+                        pattern='^[\u0621-\u064A\s]*$'
                       />
                       {errors.fullNameArabic && <p className="text-sm text-destructive mt-1">{errors.fullNameArabic}</p>}
                     </div>
@@ -349,7 +359,9 @@ const Register = () => {
 
                   <div className="space-y-4">
                     <div>
-                      <Label htmlFor="paymentCode">كود الدفع *</Label>
+                      <Label htmlFor="paymentCode">
+                        كود الدفع *
+                      </Label>
                       <Input
                         id="paymentCode"
                         placeholder="أدخل كود الدفع"

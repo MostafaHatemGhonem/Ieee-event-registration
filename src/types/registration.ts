@@ -10,7 +10,7 @@ export interface RegistrationData {
   email: string;
   age: string;
   gender: string;
-  paymentCode: string;
+  paymentCode?: string; // اختياري
   paymentScreenshot?: File | string;
   status: 'pending' | 'approved' | 'rejected';
   qrCode?: string;
