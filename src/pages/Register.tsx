@@ -245,7 +245,7 @@ const Register = () => {
                                     rel="noopener noreferrer"
                                     className="w-full p-4 bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#075E54] dark:text-[#25D366] border border-[#25D366]/20 rounded-lg transition-colors flex items-center justify-center gap-2 font-semibold"
                                 >
-                                    دا جروب الإفنت
+                                    This Event Group
                                 </a>
 
                                 {formData.isNeedBus && (
@@ -256,7 +256,7 @@ const Register = () => {
                                         className="w-full p-4 bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#075E54] dark:text-[#25D366] border border-[#25D366]/20 rounded-lg transition-colors flex items-center justify-center gap-2 font-semibold"
                                     >
                                         <Bus className="w-5 h-5" />
-                                        دا جروب المواصلات
+                                        This Bus Group
                                     </a>
                                 )}
                             </div>

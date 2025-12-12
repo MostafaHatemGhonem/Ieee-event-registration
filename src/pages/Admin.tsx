@@ -586,14 +586,14 @@ const Admin = () => {
                         <div className="space-y-4">
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
                                 {/* Arabic Name - RTL */}
-                                <div className="space-y-1">
-                                    <label className="text-xs text-muted-foreground">
-                                        الاسم بالعربي
-                                    </label>
-                                    <p className="font-medium text-right break-words" dir="rtl">
-                                        {selectedReg.fullNameArabic}
-                                    </p>
-                                </div>
+                                    <div className="space-y-1">
+                                        <label className="text-xs text-muted-foreground">
+                                            Name in Arabic
+                                        </label>
+                                        <p className="font-medium text-right break-words" dir="rtl">
+                                            {selectedReg.fullNameArabic}
+                                        </p>
+                                    </div>
                                 
                                 {/* English Name - LTR */}
                                 <div className="space-y-1">
@@ -638,9 +638,9 @@ const Admin = () => {
                                 {/* Governorate - RTL */}
                                 <div className="space-y-1">
                                     <label className="text-xs text-muted-foreground">
-                                        المحافظة
+                                        Governorate
                                     </label>
-                                    <p className="font-medium text-right break-words" dir="rtl">
+                                    <p className="font-medium text-left break-words" dir="ltr">
                                         {selectedReg.governorate}
                                     </p>
                                 </div>
@@ -648,9 +648,9 @@ const Admin = () => {
                                 {/* Faculty - RTL */}
                                 <div className="space-y-1">
                                     <label className="text-xs text-muted-foreground">
-                                        الكلية
+                                        Faculty
                                     </label>
-                                    <p className="font-medium text-right break-words" dir="rtl">
+                                    <p className="font-medium text-left break-words" dir="ltr">
                                         {selectedReg.faculty}
                                     </p>
                                 </div>
@@ -658,9 +658,9 @@ const Admin = () => {
                                 {/* Academic Year - RTL */}
                                 <div className="space-y-1">
                                     <label className="text-xs text-muted-foreground">
-                                        السنة الدراسية
+                                        Academic Year
                                     </label>
-                                    <p className="font-medium text-right break-words" dir="rtl">
+                                    <p className="font-medium text-left break-words" dir="ltr">
                                         {selectedReg.academicYear}
                                     </p>
                                 </div>
@@ -791,7 +791,7 @@ const Admin = () => {
                         </Button> */}
 
                         {/* Status Management Buttons */}
-                        {/* {(selectedReg?.status || "").toLowerCase() === "pending" && (
+                        {(selectedReg?.status || "").toLowerCase() === "pending" && (
                             <>
                                 <Button
                                     variant="outline"
@@ -807,7 +807,7 @@ const Admin = () => {
                                     Approve
                                 </Button>
                             </>
-                        )} */}
+                        )}
 
                         {/* Revert to Pending for Approved/Rejected */}
                         {((selectedReg?.status || "").toLowerCase() === "approved" ||
