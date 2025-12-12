@@ -92,6 +92,7 @@ export async function submitRegistration(
     const fieldMapping: Record<string, string> = {
         faculty: "College", // Backend expects 'College' not 'faculty'
         paymentCode: "PaymentCode", // Backend expects 'PaymentCode'
+        isNeedBus: "IsNeedBus",
         fullNameArabic: "FullNameArabic",
         fullNameEnglish: "FullNameEnglish",
         nationalId: "NationalId",
@@ -196,7 +197,6 @@ export async function getAllRegistrations(): Promise<RegistrationData[]> {
         createdAt: item.createdAt || "",
         rejectionReason: item.rejectionReason,
     }));
-
 }
 
 export async function approveRegistration(id: string): Promise<unknown> {
@@ -212,9 +212,9 @@ export async function rejectRegistration(
 ): Promise<unknown> {
     // User request: http://ieeebns.runasp.net/api/Admin/attendees/1/cancel
     return apiRequest(`/Admin/attendees/${id}/cancel`, {
-        method: "POST", // or DELETE? Postman tree shows DEL Reject, User text says http://../cancel
-        // I will try POST first as it's safer for "cancel" actions often defined as RPC.
-        body: reason ? JSON.stringify({ reason }) : undefined,
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reason: reason || "No reason provided" }),
     });
 }
 
@@ -252,4 +252,55 @@ export async function getStatistics(): Promise<{
         rejected: all.filter((r) => r.status === "Rejected").length,
         checkedIn: all.filter((r) => r.checkedIn).length,
     };
+}
+
+// ==================== Email APIs ====================
+
+export async function sendRegistrationConfirmationEmail(
+    registration: RegistrationData
+): Promise<unknown> {
+    return apiRequest("/Email/send-registration-confirmation", {
+        method: "POST",
+        body: JSON.stringify({
+            email: registration.email,
+            fullNameArabic: registration.fullNameArabic,
+            fullNameEnglish: registration.fullNameEnglish,
+            faculty: registration.college,
+            phone: registration.phone,
+            nationalId: registration.nationalId,
+        }),
+    });
+}
+
+export async function sendApprovalEmail(
+    registration: RegistrationData
+): Promise<unknown> {
+    return apiRequest("/Email/send-approval", {
+        method: "POST",
+        body: JSON.stringify({
+            email: registration.email,
+            fullNameArabic: registration.fullNameArabic,
+            fullNameEnglish: registration.fullNameEnglish,
+            faculty: registration.college,
+            phone: registration.phone,
+            attendeeId: registration.id,
+        }),
+    });
+}
+
+export async function sendRejectionEmail(
+    email: string,
+    fullNameArabic: string,
+    fullNameEnglish: string,
+    reason: string
+): Promise<unknown> {
+    return apiRequest("/Email/send-rejection", {
+        method: "POST",
+        body: JSON.stringify({
+            email,
+            fullNameArabic,
+            fullNameEnglish,
+            reason,
+        }),
+    });
 }

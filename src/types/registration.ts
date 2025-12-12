@@ -8,8 +8,8 @@ export interface RegistrationData {
     college: string; // College/Faculty code or name
     academicYear: string; // Academic year (1, 2, 3, 4, 5, or 'خريج')
     email: string;
-    age: number;
-    gender: "Male" | "Female";
+    age: number | string;
+    gender: "Male" | "Female" | string;
     paymentCode: string;
     paymentImagePath?: string; // Path to payment proof image
     paymentScreenshot?: File | string; // For form submission or display
