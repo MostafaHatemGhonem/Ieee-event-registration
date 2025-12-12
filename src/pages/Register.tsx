@@ -163,7 +163,7 @@ const Register = () => {
         if (!validateStep(4)) return;
 
         setIsSubmitting(true);
-        
+
         try {
             // Generate temporary ID for QR code (using national ID + timestamp for uniqueness)
             const tempId = `${formData.nationalId}-${Date.now()}`;
@@ -236,7 +236,7 @@ const Register = () => {
                             <p className="text-muted-foreground mb-4">
                                 Thank you for registering for the TIME event. Your application will be reviewed by the relevant committee and a confirmation email will be sent.
                             </p>
-                            
+
                             {/* WhatsApp Groups */}
                             <div className="space-y-3 mb-8">
                                 <a
@@ -723,23 +723,29 @@ const Register = () => {
                                     </div>
 
                                     <div className="space-y-4">
+                                        <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 text-center">
+                                            <p className="text-lg font-bold text-primary">
+                                                Ticket price 30 EGP including transportation
+                                            </p>
+                                        </div>
+
                                         {/* Payment Numbers - Simple */}
                                         <div className="bg-gray-50 dark:bg-gray-900 border rounded-lg p-4 mb-4">
                                             <h3 className="font-semibold mb-3 flex items-center gap-2">
                                                 <CreditCard className="w-4 h-4" />
                                                 Payment Numbers
                                             </h3>
-                                            
+
                                             <div className="space-y-2">
-                                                <a 
+                                                <a
                                                     href="tel:01554104799"
                                                     className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded border hover:border-blue-400 transition-colors"
                                                 >
                                                     <span className="text-sm font-medium">Instapay</span>
                                                     <span className="font-mono font-bold text-blue-600" dir="ltr">01554104799</span>
                                                 </a>
-                                                
-                                                <a 
+
+                                                <a
                                                     href="tel:01097587564"
                                                     className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded border hover:border-red-400 transition-colors"
                                                 >
@@ -776,18 +782,17 @@ const Register = () => {
                                                 </p>
                                             )}
                                             <p className="text-2xs text-muted-foreground mt-1">
-                                               The number from which you sent the money
+                                                The number from which you sent the money
                                             </p>
                                         </div>
 
                                         <div>
                                             <Label>Payment Screenshot *</Label>
                                             <div
-                                                className={`mt-2 border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
-                                                    errors.paymentScreenshot
+                                                className={`mt-2 border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${errors.paymentScreenshot
                                                         ? "border-destructive"
                                                         : "border-border hover:border-accent"
-                                                }`}
+                                                    }`}
                                                 onClick={() =>
                                                     document
                                                         .getElementById(
