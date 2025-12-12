@@ -6,7 +6,7 @@ import season10 from '@/assets/season-10.png';
 import { 
   ArrowRight, Calendar, MapPin, Users, Shield, 
   Lightbulb, Rocket, TrendingUp, Award, Globe,
-  MessageSquare, FileText, Network, Zap
+  MessageSquare, FileText, Network, Zap, Download
 } from 'lucide-react';
 
 const Index = () => {
@@ -73,6 +73,12 @@ const Index = () => {
                   Admin Login
                 </Button>
               </Link>
+              <a href="" download>
+                <Button variant="outline" size="xl" className="gap-2 w-full sm:w-auto">
+                  <Download className="w-5 h-5" />
+                  Download App
+                </Button>
+              </a>
             </div>
           </div>
         </div>
