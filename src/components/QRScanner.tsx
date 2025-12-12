@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react';
-import { Html5Qrcode } from 'html5-qrcode';
+import { useEffect, useRef, useState } from 'react';
+import { Html5Qrcode, Html5QrcodeSupportedFormats } from 'html5-qrcode';
 
 interface QRScannerProps {
   onScan: (data: string) => void;
@@ -8,76 +8,105 @@ interface QRScannerProps {
 
 export function QRScanner({ onScan, onError }: QRScannerProps) {
   const scannerRef = useRef<Html5Qrcode | null>(null);
-  const isScanning = useRef(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const scanner = new Html5Qrcode("qr-reader");
-    scannerRef.current = scanner;
+    // Unique ID for the container to avoid conflicts
+    const qrcodeRegionId = "html5qr-code-full-region";
+    
+    // Cleanup function to handle strict mode double-mount
+    let isMounted = true;
 
     const startScanner = async () => {
-      if (isScanning.current) {
-        console.log("Scanner already running, skipping...");
-        return;
-      }
-
       try {
-        console.log("Requesting camera permissions...");
-        
-        await scanner.start(
-          { facingMode: "environment" }, // Use back camera
-          {
-            fps: 10,
-            qrbox: { width: 250, height: 250 },
-            aspectRatio: 1.0,
+        // If scanner instance exists, clear it first
+        if (scannerRef.current) {
+          try {
+            await scannerRef.current.stop();
+            await scannerRef.current.clear();
+          } catch (e) {
+            // Ignore stop errors
+          }
+        }
+
+        const scanner = new Html5Qrcode(qrcodeRegionId);
+        scannerRef.current = scanner;
+
+        // Mobile-friendly config
+        const config = {
+          fps: 10,
+          qrbox: (viewfinderWidth: number, viewfinderHeight: number) => {
+            // Logic to have a square box that fits well
+            const minEdgePercentage = 0.7; // 70%
+            const minEdgeSize = Math.min(viewfinderWidth, viewfinderHeight);
+            const qrboxSize = Math.floor(minEdgeSize * minEdgePercentage);
+            return {
+              width: qrboxSize,
+              height: qrboxSize,
+            };
           },
+          aspectRatio: 1.0,
+          formatsToSupport: [ Html5QrcodeSupportedFormats.QR_CODE ]
+        };
+
+        if (!isMounted) return;
+
+        await scanner.start(
+          { facingMode: "environment" },
+          config,
           (decodedText) => {
-            // Success callback
-            console.log("QR Code detected:", decodedText);
-            onScan(decodedText);
+            if (isMounted) {
+              onScan(decodedText);
+            }
           },
           (errorMessage) => {
-            // Error callback (usually just no QR detected)
-            // We don't need to show this error - it's normal when no QR in view
+            // access errors or read errors
+            // console.warn(errorMessage);
           }
         );
-        
-        isScanning.current = true;
-        console.log("Camera started successfully!");
       } catch (err: any) {
-        console.error("Failed to start scanner:", err);
-        const errorMsg = err?.message || err?.toString() || "Failed to start camera";
-        console.error("Error details:", errorMsg);
-        
-        if (onError) {
-          onError(errorMsg);
+        if (isMounted) {
+          console.error("Failed to start scanner:", err);
+          const msg = err?.message || "Failed to access camera";
+          setError(msg);
+          if (onError) onError(msg);
         }
       }
     };
 
-    startScanner();
+    // Small timeout to ensure DOM is ready and previous instances are cleaned
+    const timer = setTimeout(() => {
+        startScanner();
+    }, 100);
 
     return () => {
-      console.log("Cleaning up scanner...");
-      if (scannerRef.current && isScanning.current) {
-        scannerRef.current
-          .stop()
-          .then(() => {
-            isScanning.current = false;
-            console.log("Scanner stopped successfully");
-          })
-          .catch((err) => console.error("Failed to stop scanner:", err));
+      isMounted = false;
+      clearTimeout(timer);
+      if (scannerRef.current) {
+        scannerRef.current.stop().catch(err => console.error("Failed to stop scanner", err));
+        scannerRef.current.clear().catch(err => console.error("Failed to clear scanner", err));
       }
     };
   }, [onScan, onError]);
 
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-64 bg-muted text-destructive text-center p-4">
+        <p>{error}</p>
+      </div>
+    );
+  }
+
   return (
     <div 
-      id="qr-reader" 
+      id="html5qr-code-full-region" 
       style={{ 
         width: '100%',
         maxWidth: '500px',
-        margin: '0 auto'
+        margin: '0 auto',
+        borderRadius: '8px',
+        overflow: 'hidden'
       }}
-    ></div>
+    />
   );
 }
