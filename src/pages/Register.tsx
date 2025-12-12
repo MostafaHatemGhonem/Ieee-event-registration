@@ -67,7 +67,7 @@ const Register = () => {
             setErrors((prev) => ({ ...prev, [field]: "" }));
         }
         // Clear custom faculty when selecting a different faculty
-        if (field === "faculty" && value !== "أخرى") {
+        if (field === "faculty" && value !== "Other") {
             setCustomFaculty("");
             if (errors.customFaculty) {
                 setErrors((prev) => ({ ...prev, customFaculty: "" }));
@@ -124,7 +124,7 @@ const Register = () => {
             if (!formData.faculty) {
                 newErrors.faculty = "Please select a faculty.";
             }
-            if (formData.faculty === "أخرى" && !customFaculty.trim()) {
+            if (formData.faculty === "Other" && !customFaculty.trim()) {
                 newErrors.customFaculty = "Please enter the faculty name.";
             }
             if (!formData.academicYear) {
@@ -176,11 +176,11 @@ const Register = () => {
 
             const qrCodeBlob = await generateQRCodeBlob(tempId);
 
-            // Use custom faculty name if "أخرى" is selected
+            // Use custom faculty name if "Other" is selected
             const finalFormData = {
                 ...formData,
                 faculty:
-                    formData.faculty == "أخرى"
+                    formData.faculty == "Other"
                         ? customFaculty.trim()
                         : formData.faculty,
                 isNeedBus: formData.isNeedBus ?? false,
@@ -556,7 +556,7 @@ const Register = () => {
                                         </div>
 
                                         <div>
-                                            <Label>المحافظة *</Label>
+                                            <Label>Governorate *</Label>
                                             <Select
                                                 value={formData.governorate}
                                                 onValueChange={(v) =>
@@ -571,7 +571,7 @@ const Register = () => {
                                                             ? "border-destructive"
                                                             : ""
                                                     }>
-                                                    <SelectValue placeholder="اختر المحافظة" />
+                                                    <SelectValue placeholder="Select Governorate" />
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     {GOVERNORATES.map((gov) => (
@@ -604,7 +604,7 @@ const Register = () => {
 
                                     <div className="space-y-4">
                                         <div>
-                                            <Label>الكلية *</Label>
+                                            <Label>Faculty *</Label>
                                             <Select
                                                 value={formData.faculty}
                                                 onValueChange={(v) =>
@@ -616,7 +616,7 @@ const Register = () => {
                                                             ? "border-destructive"
                                                             : ""
                                                     }>
-                                                    <SelectValue placeholder="اختر الكلية" />
+                                                    <SelectValue placeholder="Select Faculty" />
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     {FACULTIES.map((fac) => (
@@ -634,7 +634,7 @@ const Register = () => {
                                                 </p>
                                             )}
                                         </div>
-                                        {formData.faculty === "أخرى" && (
+                                        {formData.faculty === "Other" && (
                                             <div>
                                                 <Label htmlFor="customFaculty">
                                                     Faculty Name *
@@ -642,7 +642,6 @@ const Register = () => {
                                                 <Input
                                                     id="customFaculty"
                                                     type="text"
-                                                    dir="rtl"
                                                     placeholder="Enter Faculty Name"
                                                     value={customFaculty}
                                                     onChange={(e) => {
