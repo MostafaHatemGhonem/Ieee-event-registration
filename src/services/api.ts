@@ -180,7 +180,7 @@ export async function getAllRegistrations(): Promise<RegistrationData[]> {
         paymentCode: item.paymentCode || "",
         paymentImagePath: item.paymentImagePath || undefined,
         paymentScreenshot: item.paymentImagePath
-            ? `http://ieeebns.runasp.net/${item.paymentImagePath.replace(
+            ? `https://ieeebns.runasp.net/${item.paymentImagePath.replace(
                   /\\/g,
                   "/"
               )}`
@@ -188,7 +188,7 @@ export async function getAllRegistrations(): Promise<RegistrationData[]> {
         status: item.status as "Pending" | "Approved" | "Rejected",
         qrCodePath: item.qrCodePath || undefined,
         qrCode: item.qrCodePath
-            ? `http://ieeebns.runasp.net/${item.qrCodePath.replace(/\\/g, "/")}`
+            ? `https://ieeebns.runasp.net/${item.qrCodePath.replace(/\\/g, "/")}`
             : undefined,
         isNeedBus: item.isNeedBus || false,
         checkInTime: item.checkInTime || null,

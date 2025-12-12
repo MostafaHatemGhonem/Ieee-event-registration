@@ -23,62 +23,6 @@ import {
 } from "lucide-react";
 
 const Checkin = () => {
-<<<<<<< HEAD
-  const navigate = useNavigate();
-  const [manualCode, setManualCode] = useState('');
-  const [registrations, setRegistrations] = useState<RegistrationData[]>([]);
-  const [scanResult, setScanResult] = useState<{
-    success: boolean;
-    registration?: RegistrationData;
-    message: string;
-  } | null>(null);
-  const [recentCheckins, setRecentCheckins] = useState<RegistrationData[]>([]);
-  const [useCamera, setUseCamera] = useState(false); // Toggle between camera and manual entry
-  
-  // Handle QR code scan
-  const handleQRScan = async (qrData: string) => {
-    if (!qrData) return;
-    
-    // Validate QR code format
-    if (!isValidIEEEQRCode(qrData)) {
-      toast({
-        title: "خطأ في الرمز",
-        description: "رمز QR غير صالح. يرجى التأكد من استخدام الرمز الصحيح للفعالية",
-        variant: "destructive"
-      });
-      return;
-    }
-    
-    // Extract ID from QR data (format: IEEE-BSU-{nationalId} or IEEE-BSU-{nationalId-timestamp})
-    const extractedData = extractAttendeeIdFromQR(qrData);
-    if (!extractedData) {
-      toast({
-        title: "خطأ",
-        description: "فشل قراءة البيانات من رمز QR",
-        variant: "destructive"
-      });
-      return;
-    }
-    
-    // Extract national ID from the extracted data
-    // If format is nationalId-timestamp, take only the first part (14-digit national ID)
-    // If format is just nationalId, use it directly
-    const nationalId = extractedData.includes('-') ? extractedData.split('-')[0] : extractedData;
-    
-    try {
-      const registrations = await getAllRegistrations();
-      // Find by national ID instead of just ID
-      const found = registrations.find(r => r.nationalId === nationalId);
-      await processCheckIn(found);
-    } catch (error) {
-      toast({
-        title: "خطأ",
-        description: "فشل البحث عن التسجيل",
-        variant: "destructive"
-      });
-    }
-  };
-=======
     const navigate = useNavigate();
     const [manualCode, setManualCode] = useState("");
     const [registrations, setRegistrations] = useState<RegistrationData[]>([]);
@@ -91,7 +35,6 @@ const Checkin = () => {
         []
     );
     const [useCamera, setUseCamera] = useState(false); // Toggle between camera and manual entry
->>>>>>> 502e7047a7eae5a3540b30d0171ad10377ad0a1d
 
     // Handle QR code scan
     const handleQRScan = async (qrData: string) => {

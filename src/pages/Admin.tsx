@@ -16,8 +16,6 @@ import {
     getAllRegistrations,
     approveRegistration,
     rejectRegistration,
-    sendApprovalEmail,
-    sendRejectionEmail,
 } from "@/services/api";
 import { RegistrationData } from "@/types/registration";
 import { useAuthStore } from "@/store/authStore";
@@ -132,14 +130,7 @@ const Admin = () => {
         try {
             await approveRegistration(reg.id);
 
-            // Send approval email
-            try {
-                await sendApprovalEmail(reg);
-                console.log("Approval email sent");
-            } catch (emailError) {
-                console.error("Failed to send approval email:", emailError);
-                // Don't fail the approval if email fails
-            }
+            // Backend will send approval email automatically
 
             toast({
                 title: "تمت الموافقة!",
@@ -176,19 +167,7 @@ const Admin = () => {
         try {
             await rejectRegistration(selectedReg.id, rejectionReason);
 
-            // Send rejection email
-            try {
-                await sendRejectionEmail(
-                    selectedReg.email,
-                    selectedReg.fullNameArabic,
-                    selectedReg.fullNameEnglish,
-                    rejectionReason
-                );
-                console.log("Rejection email sent");
-            } catch (emailError) {
-                console.error("Failed to send rejection email:", emailError);
-                // Don't fail the rejection if email fails
-            }
+            // Backend will send rejection email automatically
 
             toast({
                 title: "تم الرفض",

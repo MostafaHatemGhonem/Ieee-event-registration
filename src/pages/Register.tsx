@@ -14,10 +14,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
-import {
-    submitRegistration,
-    sendRegistrationConfirmationEmail,
-} from "@/services/api";
+import { submitRegistration } from "@/services/api";
 import {
     RegistrationData,
     GOVERNORATES,
@@ -34,6 +31,8 @@ import {
     Phone,
     GraduationCap,
     CreditCard,
+    Bus,
+    AlertCircle,
 } from "lucide-react";
 
 const STEP_LABELS = ["Personal Info", "Contact", "Academic", "Payment"];
@@ -182,7 +181,6 @@ const Register = () => {
                         : formData.faculty,
                 isNeedBus: formData.isNeedBus ?? false,
             };
-            console.log(finalFormData);
 
             // إرسال البيانات إلى الـ Backend API مع QR Code
             const response = await submitRegistration(
@@ -193,27 +191,8 @@ const Register = () => {
                 paymentFile || undefined,
                 qrCodeBlob
             );
-            console.log("Registration successful:", response);
 
-            // Send confirmation email
-            try {
-                const registrationWithDefaults: RegistrationData = {
-                    id: 0, // Will be assigned by backend
-                    status: "Pending",
-                    createdAt: new Date().toISOString(),
-                    checkInTime: null,
-                    isNeedBus: finalFormData.isNeedBus ?? false,
-                    college: finalFormData.faculty,
-                    ...finalFormData,
-                };
-                await sendRegistrationConfirmationEmail(
-                    registrationWithDefaults
-                );
-                console.log("Confirmation email sent");
-            } catch (emailError) {
-                console.error("Failed to send confirmation email:", emailError);
-                // Don't fail the registration if email fails
-            }
+            // Backend will send confirmation email automatically
 
             setSubmitted(true);
 
@@ -249,11 +228,26 @@ const Register = () => {
                             <h2 className="text-2xl font-bold mb-4 gradient-text">
                                 تم التسجيل بنجاح!
                             </h2>
-                            <p className="text-muted-foreground mb-6">
+                            <p className="text-muted-foreground mb-4">
                                 شكراً لتسجيلك في فعالية IEEE Beni-Suef. سيتم
                                 مراجعة طلبك من قبل اللجنة المختصة وسيتم إرسال
                                 بريد إلكتروني للتأكيد.
                             </p>
+                            
+                            {/* Email Spam Warning */}
+                            <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4 mb-6">
+                                <div className="flex items-start gap-3">
+                                    <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-500 flex-shrink-0 mt-0.5" />
+                                    <div className="flex-1">
+                                        <p className="text-sm font-semibold text-amber-800 dark:text-amber-400 mb-1">
+                                            Important Note
+                                        </p>
+                                        <p className="text-sm text-amber-700 dark:text-amber-400">
+                                            The confirmation email may arrive in your Spam/Junk folder. Please check your Spam folder if you don't find the confirmation email in your main inbox.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
                             <Button
                                 variant="gradient"
                                 onClick={() => navigate("/")}>
@@ -718,22 +712,33 @@ const Register = () => {
                                             )}
                                         </div>
 
-                                        <div className="flex items-center space-x-2 rtl:space-x-reverse">
-                                            <Checkbox
-                                                id="isNeedBus"
-                                                checked={!!formData.isNeedBus}
-                                                onCheckedChange={(checked) =>
-                                                    setFormData((prev) => ({
-                                                        ...prev,
-                                                        isNeedBus: !!checked,
-                                                    }))
-                                                }
-                                            />
-                                            <Label
-                                                htmlFor="isNeedBus"
-                                                className="cursor-pointer">
-                                                هل تحتاج باص؟
-                                            </Label>
+                                        {/* Bus Question - Enhanced */}
+                                        <div className="border-2 border-accent/30 rounded-lg p-4 bg-accent/5 hover:border-accent/50 transition-colors">
+                                            <div className="flex items-start gap-3">
+                                                <div className="flex-1">
+                                                    <div className="flex items-center gap-3">
+                                                        <Checkbox
+                                                            id="isNeedBus"
+                                                            checked={!!formData.isNeedBus}
+                                                            onCheckedChange={(checked) =>
+                                                                setFormData((prev) => ({
+                                                                    ...prev,
+                                                                    isNeedBus: !!checked,
+                                                                }))
+                                                            }
+                                                            className="h-5 w-5"
+                                                        />
+                                                        <Label
+                                                            htmlFor="isNeedBus"
+                                                            className="cursor-pointer font-semibold text-base">
+                                                            هل تحتاج إلى الباص للوصول للفعالية؟
+                                                        </Label>
+                                                    </div>
+                                                    <p className="text-sm text-muted-foreground mr-8 mt-1">
+                                                        سيتم توفير مواصلات مجانية من وإلى مكان الفعالية
+                                                    </p>
+                                                </div>
+                                            </div>
                                         </div>
 
                                         <div>

@@ -11,7 +11,7 @@ Replace these placeholders when sending the email:
 | `{{EMAIL}}`            | Email address      | `user@example.com`                |
 | `{{FACULTY}}`          | Faculty/College    | `كلية الهندسة`                    |
 | `{{PHONE}}`            | Phone number       | `01012345678`                     |
-| `{{EVENT_DATE}}`       | Event date         | `15 ديسمبر 2025`                  |
+| `{{EVENT_DATE}}`       | Event date         | `17 ديسمبر 2025`                  |
 | `{{EVENT_TIME}}`       | Event time         | `10:00 صباحاً`                    |
 | `{{EVENT_LOCATION}}`   | Event location     | `قاعة المؤتمرات - جامعة بني سويف` |
 
