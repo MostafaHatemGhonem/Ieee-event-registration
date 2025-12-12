@@ -228,12 +228,10 @@ const Register = () => {
                                 <CheckCircle2 className="w-12 h-12 text-success" />
                             </div>
                             <h2 className="text-2xl font-bold mb-4 gradient-text">
-                                تم التسجيل بنجاح!
+                                Registration successful!
                             </h2>
                             <p className="text-muted-foreground mb-4">
-                                شكراً لتسجيلك في فعالية IEEE Beni-Suef. سيتم
-                                مراجعة طلبك من قبل اللجنة المختصة وسيتم إرسال
-                                بريد إلكتروني للتأكيد.
+                                Thank you for registering for the TIME event. Your application will be reviewed by the relevant committee and a confirmation email will be sent.
                             </p>
                             
                             {/* Email Spam Warning */}
@@ -253,7 +251,7 @@ const Register = () => {
                             <Button
                                 variant="gradient"
                                 onClick={() => navigate("/")}>
-                                العودة للرئيسية
+                                Back to Home
                             </Button>
                         </div>
                     </div>
@@ -297,25 +295,26 @@ const Register = () => {
                                     <div className="space-y-4">
                                         <div>
                                             <Label htmlFor="fullNameArabic">
-                                                الاسم الرباعي بالعربية *
+                                                The full name in Arabic *
                                             </Label>
                                             <Input
                                                 id="fullNameArabic"
                                                 dir="rtl"
-                                                placeholder="الاسم الأول - الأب - الجد - العائلة"
+                                                placeholder="First - Second - Third - Last Name"
                                                 value={formData.fullNameArabic}
-                                                onChange={(e) =>
+                                                onChange={(e) => {
+                                                    // Only allow Arabic characters, spaces, and hyphens
+                                                    const value = e.target.value.replace(/[a-zA-Z0-9]/g, '');
                                                     updateField(
                                                         "fullNameArabic",
-                                                        e.target.value
-                                                    )
-                                                }
+                                                        value
+                                                    );
+                                                }}
                                                 className={
                                                     errors.fullNameArabic
                                                         ? "border-destructive"
                                                         : ""
                                                 }
-                                                pattern="^[\u0621-\u064A\s]*$"
                                             />
                                             {errors.fullNameArabic && (
                                                 <p className="text-sm text-destructive mt-1">
@@ -332,12 +331,14 @@ const Register = () => {
                                                 id="fullNameEnglish"
                                                 placeholder="First - Second - Third - Last Name"
                                                 value={formData.fullNameEnglish}
-                                                onChange={(e) =>
+                                                onChange={(e) => {
+                                                    // Only allow English letters, spaces, and hyphens
+                                                    const value = e.target.value.replace(/[^a-zA-Z\s-]/g, '');
                                                     updateField(
                                                         "fullNameEnglish",
-                                                        e.target.value
-                                                    )
-                                                }
+                                                        value
+                                                    );
+                                                }}
                                                 className={
                                                     errors.fullNameEnglish
                                                         ? "border-destructive"
