@@ -13,7 +13,7 @@ export const saveRegistration = (registration: RegistrationData): RegistrationDa
   const newRegistration = {
     ...registration,
     id: crypto.randomUUID(),
-    status: 'pending' as const,
+    status: 'Pending' as const,
     createdAt: new Date().toISOString(),
   };
   registrations.push(newRegistration);
@@ -39,11 +39,11 @@ export const generateQRCode = (id: string): string => {
 
 export const approveRegistration = (id: string): RegistrationData | null => {
   const qrCode = generateQRCode(id);
-  return updateRegistration(id, { status: 'approved', qrCode });
+  return updateRegistration(id, { status: 'Approved', qrCode });
 };
 
 export const rejectRegistration = (id: string, reason: string): RegistrationData | null => {
-  return updateRegistration(id, { status: 'rejected', rejectionReason: reason });
+  return updateRegistration(id, { status: 'Rejected', rejectionReason: reason });
 };
 
 export const checkInAttendee = (id: string): RegistrationData | null => {

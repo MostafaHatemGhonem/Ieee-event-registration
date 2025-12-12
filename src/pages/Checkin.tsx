@@ -36,42 +36,97 @@ const Checkin = () => {
     );
     const [useCamera, setUseCamera] = useState(false); // Toggle between camera and manual entry
 
+    // Parse backend QR format: "attendee:32;nid:30133090596878;name:test final"
+    const parseBackendQR = (qrData: string): { attendeeId: string; nationalId: string; name: string } | null => {
+        try {
+            const parts = qrData.split(";");
+            const data: Record<string, string> = {};
+            
+            for (const part of parts) {
+                const [key, ...valueParts] = part.split(":");
+                if (key && valueParts.length > 0) {
+                    data[key.trim()] = valueParts.join(":").trim();
+                }
+            }
+            
+            if (data.attendee && data.nid) {
+                return {
+                    attendeeId: data.attendee,
+                    nationalId: data.nid,
+                    name: data.name || ""
+                };
+            }
+            return null;
+        } catch {
+            return null;
+        }
+    };
+
     // Handle QR code scan
     const handleQRScan = async (qrData: string) => {
         if (!qrData) return;
 
-        // Validate QR code format
-        if (!isValidIEEEQRCode(qrData)) {
+        console.log("=== QR SCAN DEBUG ===");
+        console.log("Raw QR Data:", qrData);
+
+        let nationalId: string | null = null;
+        let attendeeId: string | null = null;
+
+        // Try backend format first: "attendee:32;nid:30133090596878;name:test final"
+        const backendData = parseBackendQR(qrData);
+        if (backendData) {
+            console.log("Detected BACKEND QR format:", backendData);
+            nationalId = backendData.nationalId;
+            attendeeId = backendData.attendeeId;
+        } 
+        // Try IEEE format: "IEEE-BSU-{nationalId}"
+        else if (isValidIEEEQRCode(qrData)) {
+            console.log("Detected IEEE QR format");
+            const extractedData = extractAttendeeIdFromQR(qrData);
+            if (extractedData) {
+                nationalId = extractedData.includes("-") 
+                    ? extractedData.split("-")[0] 
+                    : extractedData;
+            }
+        }
+
+        // If neither format matched
+        if (!nationalId && !attendeeId) {
             toast({
                 title: "خطأ في الرمز",
-                description:
-                    "رمز QR غير صالح. يرجى التأكد من استخدام الرمز الصحيح للفعالية",
+                description: "رمز QR غير صالح. يرجى التأكد من استخدام الرمز الصحيح للفعالية",
                 variant: "destructive",
             });
+            console.log("=== END DEBUG (invalid format) ===");
             return;
         }
 
-        // Extract ID from QR data (format: IEEE-BSU-{nationalId-timestamp})
-        const extractedData = extractAttendeeIdFromQR(qrData);
-        if (!extractedData) {
-            toast({
-                title: "خطأ",
-                description: "فشل قراءة البيانات من رمز QR",
-                variant: "destructive",
-            });
-            return;
-        }
-
-        // Extract national ID from the extracted data (format: nationalId-timestamp)
-        const nationalId = extractedData.split("-")[0];
+        console.log("National ID to search:", nationalId);
+        console.log("Attendee ID to search:", attendeeId);
 
         try {
             const registrations = await getAllRegistrations();
-            // Find by national ID instead of just ID
-            const found = registrations.find(
-                (r) => r.nationalId === nationalId
-            );
-            await processCheckIn(found);
+            
+            console.log("All registrations:", registrations.map(r => ({
+                id: r.id,
+                nationalId: r.nationalId,
+                name: r.fullNameEnglish
+            })));
+            
+            // Find by attendee ID first (most reliable), then by national ID
+            let found = attendeeId 
+                ? registrations.find((r) => r.id === attendeeId)
+                : null;
+            
+            if (!found && nationalId) {
+                found = registrations.find((r) => r.nationalId === nationalId);
+            }
+            
+            console.log("Found registration:", found);
+            console.log("=== END DEBUG ===");
+            
+            // Pass the raw QR data to processCheckIn so it can be sent to backend
+            await processCheckIn(found, qrData);
         } catch (error) {
             toast({
                 title: "خطأ",
@@ -115,7 +170,9 @@ const Checkin = () => {
                     r.nationalId === manualCode
             );
 
-            await processCheckIn(found);
+            // Generate QR data in backend format for manual search
+            const generatedQrData = found ? `attendee:${found.id};nid:${found.nationalId};name:${found.fullNameEnglish}` : undefined;
+            await processCheckIn(found, generatedQrData);
             setManualCode("");
         } catch (error) {
             toast({
@@ -127,7 +184,8 @@ const Checkin = () => {
     };
 
     const processCheckIn = async (
-        registration: RegistrationData | undefined | null
+        registration: RegistrationData | undefined | null,
+        rawQrData?: string
     ) => {
         if (!registration) {
             setScanResult({
@@ -137,12 +195,15 @@ const Checkin = () => {
             return;
         }
 
-        if (registration.status !== "approved") {
+        // Convert status to lowercase for case-insensitive comparison
+        const normalizedStatus = (registration.status || '').toLowerCase();
+
+        if (normalizedStatus !== "approved") {
             setScanResult({
                 success: false,
                 registration,
                 message:
-                    registration.status === "pending"
+                    normalizedStatus === "pending"
                         ? "Registration is still pending approval."
                         : "Registration has been rejected.",
             });
@@ -163,8 +224,18 @@ const Checkin = () => {
         // Perform check-in
         if (registration.id) {
             try {
-                // Send both attendeeId and nationalId to backend
-                await checkInAttendee(registration.id, registration.nationalId);
+                console.log("Attempting check-in:", {
+                    id: registration.id,
+                    nationalId: registration.nationalId,
+                    status: registration.status,
+                    qrCode: registration.qrCode,
+                });
+                
+                // Send the raw QR data to backend (backend expects its own format)
+                // If rawQrData is provided (from scan), use it. Otherwise generate backend format.
+                const qrDataToSend = rawQrData || `attendee:${registration.id};nid:${registration.nationalId};name:${registration.fullNameEnglish}`;
+                console.log("Sending to check-in API:", { QrData: qrDataToSend });
+                await checkInAttendee(registration.id, registration.nationalId, qrDataToSend);
                 const updated = {
                     ...registration,
                     checkedIn: true,
@@ -181,13 +252,14 @@ const Checkin = () => {
                     description: `${registration.fullNameEnglish} has been checked in.`,
                 });
             } catch (error) {
+                console.error("Check-in error:", error);
                 setScanResult({
                     success: false,
-                    message: "Failed to check in. Please try again.",
+                    message: `Failed to check in: ${error instanceof Error ? error.message : 'Unknown error'}`,
                 });
                 toast({
                     title: "Error",
-                    description: "Failed to check in",
+                    description: error instanceof Error ? error.message : "Failed to check in",
                     variant: "destructive",
                 });
             }
@@ -448,9 +520,7 @@ const Checkin = () => {
                                         {
                                             registrations.filter(
                                                 (r) =>
-                                                    (r.status === "Approved" ||
-                                                        r.status ===
-                                                            "approved") &&
+                                                    r.status === "Approved" &&
                                                     !r.checkedIn
                                             ).length
                                         }

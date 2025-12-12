@@ -118,11 +118,13 @@ const Admin = () => {
     const handleApprove = async (reg: RegistrationData) => {
         if (!reg.id) return;
 
+        console.log("Attempting approve for:", { id: reg.id, name: reg.fullNameEnglish });
+
         // Optimistic update
         const previousRegistrations = [...registrations];
         setRegistrations((prev) =>
             prev.map((r) =>
-                r.id === reg.id ? { ...r, status: "approved" as const } : r
+                r.id === reg.id ? { ...r, status: "Approved" as const } : r
             )
         );
         setShowDetailsDialog(false);
@@ -138,11 +140,12 @@ const Admin = () => {
             });
             await loadRegistrations(); // Refresh to get latest data
         } catch (error) {
+            console.error("Approve error:", error);
             // Revert optimistic update on error
             setRegistrations(previousRegistrations);
             toast({
                 title: "خطأ",
-                description: getArabicError(error as Error),
+                description: `فشل: ${error instanceof Error ? error.message : getArabicError(error as Error)}`,
                 variant: "destructive",
             });
         }
@@ -156,7 +159,7 @@ const Admin = () => {
         setRegistrations((prev) =>
             prev.map((r) =>
                 r.id === selectedReg.id
-                    ? { ...r, status: "rejected" as const, rejectionReason }
+                    ? { ...r, status: "Rejected" as const, rejectionReason }
                     : r
             )
         );
@@ -187,7 +190,8 @@ const Admin = () => {
     };
 
     const getStatusBadge = (status: string) => {
-        switch (status) {
+        const normalizedStatus = (status || "").toLowerCase();
+        switch (normalizedStatus) {
             case "approved":
                 return (
                     <Badge className="bg-success text-success-foreground">
@@ -718,7 +722,7 @@ const Admin = () => {
                                 </div>
                             )}
 
-                            {selectedReg.status === "approved" &&
+                            {(selectedReg.status || "").toLowerCase() === "approved" &&
                                 selectedReg.qrCode && (
                                     <div className="text-center p-4 bg-muted rounded-lg">
                                         <p className="text-sm text-muted-foreground mb-2">
@@ -732,7 +736,7 @@ const Admin = () => {
                                     </div>
                                 )}
 
-                            {selectedReg.status === "rejected" &&
+                            {(selectedReg.status || "").toLowerCase() === "rejected" &&
                                 selectedReg.rejectionReason && (
                                     <div className="p-4 bg-destructive/10 rounded-lg">
                                         <p className="text-sm text-destructive font-medium">
@@ -768,7 +772,7 @@ const Admin = () => {
                         </Button>
 
                         {/* Status Management Buttons */}
-                        {selectedReg?.status === "pending" && (
+                        {(selectedReg?.status || "").toLowerCase() === "pending" && (
                             <>
                                 <Button
                                     variant="outline"
@@ -787,8 +791,8 @@ const Admin = () => {
                         )}
 
                         {/* Revert to Pending for Approved/Rejected */}
-                        {(selectedReg?.status === "approved" ||
-                            selectedReg?.status === "rejected") && (
+                        {((selectedReg?.status || "").toLowerCase() === "approved" ||
+                            (selectedReg?.status || "").toLowerCase() === "rejected") && (
                             <Button
                                 variant="outline"
                                 onClick={async () => {
@@ -803,7 +807,7 @@ const Admin = () => {
                                             r.id === selectedReg.id
                                                 ? {
                                                       ...r,
-                                                      status: "pending" as const,
+                                                      status: "Pending" as const,
                                                   }
                                                 : r
                                         )

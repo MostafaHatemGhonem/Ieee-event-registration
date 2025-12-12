@@ -1,5 +1,5 @@
 export interface RegistrationData {
-    id: number;
+    id: string;
     fullNameArabic: string;
     fullNameEnglish: string;
     phone: string;

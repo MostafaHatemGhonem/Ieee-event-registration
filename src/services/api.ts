@@ -165,7 +165,7 @@ export async function getAllRegistrations(): Promise<RegistrationData[]> {
 
     // Map backend field names to frontend format
     return data.map((item) => ({
-        id: item.id,
+        id: item.id.toString(), // Convert backend number to string for frontend compatibility
         fullNameArabic: item.fullNameArabic || "",
         fullNameEnglish: item.fullNameEnglish || "",
         nationalId: item.nationalID || "",
@@ -222,15 +222,17 @@ export async function rejectRegistration(
 
 export async function checkInAttendee(
     id: string,
-    nationalId?: string
+    nationalId?: string,
+    qrData?: string
 ): Promise<unknown> {
     // User request: http://ieeebns.runasp.net/api/Checkin
-    // Backend accepts both attendeeId and nationalId
+    // Backend requires QrData field - format: IEEE-BSU-{nationalId}-{timestamp}
+    const qrDataValue = qrData || `IEEE-BSU-${nationalId}-${Date.now()}`;
+    
     return apiRequest("/Checkin", {
         method: "POST",
         body: JSON.stringify({
-            attendeeId: id,
-            nationalId: nationalId,
+            QrData: qrDataValue,
         }),
     });
 }
