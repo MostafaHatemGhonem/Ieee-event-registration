@@ -237,19 +237,28 @@ const Register = () => {
                                 Thank you for registering for the TIME event. Your application will be reviewed by the relevant committee and a confirmation email will be sent.
                             </p>
                             
-                            {/* Email Spam Warning */}
-                            <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4 mb-6">
-                                <div className="flex items-start gap-3">
-                                    <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-500 flex-shrink-0 mt-0.5" />
-                                    <div className="flex-1">
-                                        <p className="text-sm font-semibold text-amber-800 dark:text-amber-400 mb-1">
-                                            Important Note
-                                        </p>
-                                        <p className="text-sm text-amber-700 dark:text-amber-400">
-                                            The confirmation email may arrive in your Spam/Junk folder. Please check your Spam folder if you don't find the confirmation email in your main inbox.
-                                        </p>
-                                    </div>
-                                </div>
+                            {/* WhatsApp Groups */}
+                            <div className="space-y-3 mb-8">
+                                <a
+                                    href="https://chat.whatsapp.com/Jd5jBlSZobV4Um5aIpU5O3"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="w-full p-4 bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#075E54] dark:text-[#25D366] border border-[#25D366]/20 rounded-lg transition-colors flex items-center justify-center gap-2 font-semibold"
+                                >
+                                    دا جروب الإفنت
+                                </a>
+
+                                {formData.isNeedBus && (
+                                    <a
+                                        href="https://chat.whatsapp.com/HZv908RvBbICm9LZz0Qdqn"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="w-full p-4 bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#075E54] dark:text-[#25D366] border border-[#25D366]/20 rounded-lg transition-colors flex items-center justify-center gap-2 font-semibold"
+                                    >
+                                        <Bus className="w-5 h-5" />
+                                        دا جروب المواصلات
+                                    </a>
+                                )}
                             </div>
                             <Button
                                 variant="gradient"
