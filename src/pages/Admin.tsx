@@ -590,11 +590,7 @@ const Admin = () => {
                                     <label className="text-xs text-muted-foreground">
                                         الاسم بالعربي
                                     </label>
-<<<<<<< HEAD
-                                    <p className="font-medium text-right" dir="rtl">
-=======
-                                    <p className="font-medium break-words" dir="rtl">
->>>>>>> 3f70c1328684765d8c334f1c73d48e5463715fe6
+                                    <p className="font-medium text-right break-words" dir="rtl">
                                         {selectedReg.fullNameArabic}
                                     </p>
                                 </div>
@@ -604,11 +600,7 @@ const Admin = () => {
                                     <label className="text-xs text-muted-foreground">
                                         Full Name (English)
                                     </label>
-<<<<<<< HEAD
-                                    <p className="font-medium text-left" dir="ltr">
-=======
-                                    <p className="font-medium break-words">
->>>>>>> 3f70c1328684765d8c334f1c73d48e5463715fe6
+                                    <p className="font-medium text-left break-words" dir="ltr">
                                         {selectedReg.fullNameEnglish}
                                     </p>
                                 </div>
@@ -618,11 +610,7 @@ const Admin = () => {
                                     <label className="text-xs text-muted-foreground">
                                         Email
                                     </label>
-<<<<<<< HEAD
                                     <p className="font-medium text-left break-all" dir="ltr">
-=======
-                                    <p className="font-medium break-all">
->>>>>>> 3f70c1328684765d8c334f1c73d48e5463715fe6
                                         {selectedReg.email}
                                     </p>
                                 </div>
@@ -632,11 +620,7 @@ const Admin = () => {
                                     <label className="text-xs text-muted-foreground">
                                         Phone
                                     </label>
-<<<<<<< HEAD
-                                    <p className="font-medium text-left" dir="ltr">
-=======
-                                    <p className="font-medium break-words">
->>>>>>> 3f70c1328684765d8c334f1c73d48e5463715fe6
+                                    <p className="font-medium text-left break-words" dir="ltr">
                                         {selectedReg.phone}
                                     </p>
                                 </div>
@@ -646,11 +630,7 @@ const Admin = () => {
                                     <label className="text-xs text-muted-foreground">
                                         National ID
                                     </label>
-<<<<<<< HEAD
-                                    <p className="font-medium text-left" dir="ltr">
-=======
-                                    <p className="font-medium break-words">
->>>>>>> 3f70c1328684765d8c334f1c73d48e5463715fe6
+                                    <p className="font-medium text-left break-words" dir="ltr">
                                         {selectedReg.nationalId}
                                     </p>
                                 </div>
@@ -660,11 +640,7 @@ const Admin = () => {
                                     <label className="text-xs text-muted-foreground">
                                         المحافظة
                                     </label>
-<<<<<<< HEAD
-                                    <p className="font-medium text-right" dir="rtl">
-=======
-                                    <p className="font-medium break-words">
->>>>>>> 3f70c1328684765d8c334f1c73d48e5463715fe6
+                                    <p className="font-medium text-right break-words" dir="rtl">
                                         {selectedReg.governorate}
                                     </p>
                                 </div>
@@ -674,11 +650,7 @@ const Admin = () => {
                                     <label className="text-xs text-muted-foreground">
                                         الكلية
                                     </label>
-<<<<<<< HEAD
-                                    <p className="font-medium text-right" dir="rtl">
-=======
-                                    <p className="font-medium break-words">
->>>>>>> 3f70c1328684765d8c334f1c73d48e5463715fe6
+                                    <p className="font-medium text-right break-words" dir="rtl">
                                         {selectedReg.faculty}
                                     </p>
                                 </div>
@@ -688,11 +660,7 @@ const Admin = () => {
                                     <label className="text-xs text-muted-foreground">
                                         السنة الدراسية
                                     </label>
-<<<<<<< HEAD
-                                    <p className="font-medium text-right" dir="rtl">
-=======
-                                    <p className="font-medium break-words">
->>>>>>> 3f70c1328684765d8c334f1c73d48e5463715fe6
+                                    <p className="font-medium text-right break-words" dir="rtl">
                                         {selectedReg.academicYear}
                                     </p>
                                 </div>
@@ -702,11 +670,7 @@ const Admin = () => {
                                     <label className="text-xs text-muted-foreground">
                                         Age
                                     </label>
-<<<<<<< HEAD
-                                    <p className="font-medium text-left" dir="ltr">
-=======
-                                    <p className="font-medium break-words">
->>>>>>> 3f70c1328684765d8c334f1c73d48e5463715fe6
+                                    <p className="font-medium text-left break-words" dir="ltr">
                                         {selectedReg.age}
                                     </p>
                                 </div>
@@ -716,15 +680,8 @@ const Admin = () => {
                                     <label className="text-xs text-muted-foreground">
                                         Gender
                                     </label>
-<<<<<<< HEAD
-                                    <p className="font-medium text-left" dir="ltr">
+                                    <p className="font-medium text-left break-words" dir="ltr">
                                         {selectedReg.gender === "male" ? "Male" : "Female"}
-=======
-                                    <p className="font-medium break-words">
-                                        {selectedReg.gender === "male"
-                                            ? "Male"
-                                            : "Female"}
->>>>>>> 3f70c1328684765d8c334f1c73d48e5463715fe6
                                     </p>
                                 </div>
                                 
@@ -733,11 +690,7 @@ const Admin = () => {
                                     <label className="text-xs text-muted-foreground">
                                         Payment Code
                                     </label>
-<<<<<<< HEAD
-                                    <p className="font-medium text-left font-mono" dir="ltr">
-=======
-                                    <p className="font-medium break-words">
->>>>>>> 3f70c1328684765d8c334f1c73d48e5463715fe6
+                                    <p className="font-medium text-left font-mono break-words" dir="ltr">
                                         {selectedReg.paymentCode}
                                     </p>
                                 </div>

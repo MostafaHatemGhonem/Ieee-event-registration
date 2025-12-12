@@ -302,12 +302,7 @@ const Register = () => {
                                             </Label>
                                             <Input
                                                 id="fullNameArabic"
-<<<<<<< HEAD
                                                 placeholder="First - Second - Third - Last Name"
-=======
-                                                dir="rtl"
-                                                placeholder="الاسم الأول - الأب - الجد - العائلة"
->>>>>>> 3f70c1328684765d8c334f1c73d48e5463715fe6
                                                 value={formData.fullNameArabic}
                                                 onChange={(e) => {
                                                     // Allow Arabic characters, spaces, hyphens, and Arabic numbers
@@ -907,11 +902,7 @@ const Register = () => {
                                         </>
                                     ) : (
                                         <>
-<<<<<<< HEAD
                                             Submit
-=======
-                                            Register
->>>>>>> 3f70c1328684765d8c334f1c73d48e5463715fe6
                                             <CheckCircle2 className="w-4 h-4" />
                                         </>
                                     )}
