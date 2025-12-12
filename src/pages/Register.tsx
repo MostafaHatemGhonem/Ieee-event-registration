@@ -32,6 +32,7 @@ const Register = () => {
     gender: '',
     paymentCode: '',
   });
+  const [customFaculty, setCustomFaculty] = useState('');
   const [paymentFile, setPaymentFile] = useState<File | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -39,6 +40,13 @@ const Register = () => {
     setFormData(prev => ({ ...prev, [field]: value }));
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
+    }
+    // Clear custom faculty when selecting a different faculty
+    if (field === 'faculty' && value !== 'أخرى') {
+      setCustomFaculty('');
+      if (errors.customFaculty) {
+        setErrors(prev => ({ ...prev, customFaculty: '' }));
+      }
     }
   };
 
@@ -78,6 +86,9 @@ const Register = () => {
     if (step === 3) {
       if (!formData.faculty) {
         newErrors.faculty = 'يرجى اختيار الكلية';
+      }
+      if (formData.faculty === 'أخرى' && !customFaculty.trim()) {
+        newErrors.customFaculty = 'يرجى إدخال اسم الكلية';
       }
       if (!formData.academicYear) {
         newErrors.academicYear = 'يرجى اختيار السنة الدراسية';
@@ -125,14 +136,21 @@ const Register = () => {
       
       const qrCodeBlob = await generateQRCodeBlob(tempId);
       
+      // Use custom faculty name if "أخرى" is selected
+      const finalFormData = {
+        ...formData,
+        faculty: formData.faculty == 'أخرى' ? customFaculty.trim() : formData.faculty
+      };
+      console.log(finalFormData)
+      
       // إرسال البيانات إلى الـ Backend API مع QR Code
       const response = await submitRegistration(
-        formData as Omit<RegistrationData, 'id' | 'status' | 'createdAt'>,
+        finalFormData as Omit<RegistrationData, 'id' | 'status' | 'createdAt'>,
         paymentFile || undefined,
         qrCodeBlob
       );
-      
       console.log('Registration successful:', response);
+      
       setSubmitted(true);
       
       toast({
@@ -344,7 +362,26 @@ const Register = () => {
                       </Select>
                       {errors.faculty && <p className="text-sm text-destructive mt-1">{errors.faculty}</p>}
                     </div>
-
+                    {formData.faculty === 'أخرى' && (
+                      <div>
+                        <Label htmlFor="customFaculty">اسم الكلية *</Label>
+                        <Input
+                          id="customFaculty"
+                          type="text"
+                          dir="rtl"
+                          placeholder="أدخل اسم الكلية"
+                          value={customFaculty}
+                          onChange={(e) => {
+                            setCustomFaculty(e.target.value);
+                            if (errors.customFaculty) {
+                              setErrors(prev => ({ ...prev, customFaculty: '' }));
+                            }
+                          }}
+                          className={errors.customFaculty ? 'border-destructive' : ''}
+                        />
+                        {errors.customFaculty && <p className="text-sm text-destructive mt-1">{errors.customFaculty}</p>}
+                      </div>
+                    )}
                     <div>
                       <Label>السنة الدراسية *</Label>
                       <Select value={formData.academicYear} onValueChange={(v) => updateField('academicYear', v)}>
