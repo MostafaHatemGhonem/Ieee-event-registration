@@ -4,30 +4,27 @@
 
 Replace these placeholders when sending the email:
 
-| Variable               | Description        | Example                           |
-| ---------------------- | ------------------ | --------------------------------- |
-| `{{ATTENDEE_ID}}`      | Unique attendee ID | `demo-123`                        |
-| `{{FULL_NAME_ARABIC}}` | Arabic full name   | `محمد أحمد علي`                   |
-| `{{EMAIL}}`            | Email address      | `user@example.com`                |
-| `{{FACULTY}}`          | Faculty/College    | `كلية الهندسة`                    |
-| `{{PHONE}}`            | Phone number       | `01012345678`                     |
-| `{{EVENT_DATE}}`       | Event date         | `17 ديسمبر 2025`                  |
-| `{{EVENT_TIME}}`       | Event time         | `10:00 صباحاً`                    |
-| `{{EVENT_LOCATION}}`   | Event location     | `قاعة المؤتمرات - جامعة بني سويف` |
+| Variable         | Description            | Example              |
+| ---------------- | ---------------------- | -------------------- |
+| `{{FULL_NAME}}`  | Full name (English)    | `Ahmed Mohamed Ali`  |
+| `{{EMAIL}}`      | Email address          | `user@example.com`   |
+| `{{NID}}`        | National ID            | `30112012345678`     |
+| `{{PHONE}}`      | Phone number           | `01012345678`        |
+| `{{EVENT_NAME}}` | Event name             | `IEEE Event 2025`    |
+| `{{DATE}}`       | Registration date      | `2025-12-17`         |
+| `{{QR_BASE64}}`  | QR code as base64 data | `iVBORw0KGgoAAAA...` |
 
 ---
 
 ## QR Code Generation
 
-The QR code is generated using `api.qrserver.com`:
+The QR code is sent as **base64-encoded image**:
 
 ```html
-<img
-  src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=IEEE-BSU-{{ATTENDEE_ID}}"
-/>
+<img src="data:image/png;base64,{{QR_BASE64}}" alt="QR Code" />
 ```
 
-**QR Data Format:** `IEEE-BSU-{attendee_id}`
+**QR Data Format:** `IEEE-BSU-{NationalID}`
 
 ---
 

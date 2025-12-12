@@ -242,11 +242,11 @@
       <div class="content">
         <div class="success-badge">✓ تم التأكيد</div>
 
-        <h2 class="greeting">مرحباً {{FULL_NAME_ARABIC}}،</h2>
+        <h2 class="greeting">مرحباً {{FULL_NAME}}،</h2>
 
         <p class="message">
-          يسعدنا إخبارك بأنه تم قبول طلب تسجيلك في فعالية IEEE Beni-Suef بنجاح!
-          نحن متحمسون لاستقبالك ونتطلع لرؤيتك في الفعالية.
+          نشكرك على التسجيل في فعالية {{EVENT_NAME}}. تم
+          استلام طلبك بنجاح وسيتم مراجعته من قبل اللجنة المنظمة قريباً.
         </p>
 
         <!-- Registration Info -->
@@ -254,15 +254,15 @@
           <h3>📋 معلومات التسجيل</h3>
           <div class="info-row">
             <span class="info-label">الاسم:</span>
-            <span class="info-value">{{FULL_NAME_ARABIC}}</span>
+            <span class="info-value">{{FULL_NAME}}</span>
           </div>
           <div class="info-row">
             <span class="info-label">البريد الإلكتروني:</span>
             <span class="info-value">{{EMAIL}}</span>
           </div>
           <div class="info-row">
-            <span class="info-label">الكلية:</span>
-            <span class="info-value">{{FACULTY}}</span>
+            <span class="info-label">الرقم القومي:</span>
+            <span class="info-value">{{NID}}</span>
           </div>
           <div class="info-row">
             <span class="info-label">رقم الهاتف:</span>
@@ -275,12 +275,13 @@
           <h2>🎫 QR Code الخاص بك</h2>
           <p>احتفظ بهذا الرمز معك - ستحتاجه عند الحضور!</p>
 
-          <div class="qr-code-container">
+          <div class="qr-code">
             <img
-              src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=IEEE-BSU-{{ATTENDEE_ID}}"
+              class="qr-image"
+              src="data:image/png;base64,{{QR_BASE64}}"
               alt="QR Code"
             />
-            <div class="qr-id">ID: {{ATTENDEE_ID}}</div>
+            <div class="qr-id">ID: {{NID}}</div>
           </div>
         </div>
 
@@ -302,16 +303,12 @@
         <div class="info-box">
           <h3>📅 تفاصيل الفعالية</h3>
           <div class="info-row">
-            <span class="info-label">التاريخ:</span>
-            <span class="info-value">{{EVENT_DATE}}</span>
+            <span class="info-label">اسم الفعالية:</span>
+            <span class="info-value">{{EVENT_NAME}}</span>
           </div>
           <div class="info-row">
-            <span class="info-label">الوقت:</span>
-            <span class="info-value">{{EVENT_TIME}}</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">المكان:</span>
-            <span class="info-value">{{EVENT_LOCATION}}</span>
+            <span class="info-label">تاريخ التسجيل:</span>
+            <span class="info-value">{{DATE}}</span>
           </div>
         </div>
 

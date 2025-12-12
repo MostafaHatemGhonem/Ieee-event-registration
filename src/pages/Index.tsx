@@ -83,8 +83,8 @@ const Index = () => {
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
             <div className="card-elevated p-6 text-center animate-slide-up hover:scale-105 transition-transform" style={{ animationDelay: '0.1s' }}>
-              <div className="w-14 h-14 mx-auto mb-4 rounded-xl gradient-primary flex items-center justify-center shadow-glow">
-                <Calendar className="w-7 h-7 text-primary-foreground" />
+              <div className="w-12 h-12 mx-auto mb-4 rounded-xl gradient-primary flex items-center justify-center shadow-glow">
+                <Calendar className="w-6 h-6 text-primary-foreground" />
               </div>
               <h3 className="font-semibold text-lg mb-2">Event Date</h3>
               <p className="text-muted-foreground">decemper 17 2025</p>
@@ -92,8 +92,8 @@ const Index = () => {
             </div>
             
             <div className="card-elevated p-6 text-center animate-slide-up hover:scale-105 transition-transform" style={{ animationDelay: '0.2s' }}>
-              <div className="w-14 h-14 mx-auto mb-4 rounded-xl gradient-primary flex items-center justify-center shadow-glow">
-                <MapPin className="w-7 h-7 text-primary-foreground" />
+              <div className="w-12 h-12 mx-auto mb-4 rounded-xl gradient-primary flex items-center justify-center shadow-glow">
+                <MapPin className="w-6 h-6 text-primary-foreground" />
               </div>
               <h3 className="font-semibold text-lg mb-2">Location</h3>
               <p className="text-muted-foreground">القرية الذكية</p>
@@ -101,8 +101,8 @@ const Index = () => {
             </div>
             
             <div className="card-elevated p-6 text-center animate-slide-up hover:scale-105 transition-transform" style={{ animationDelay: '0.3s' }}>
-              <div className="w-14 h-14 mx-auto mb-4 rounded-xl gradient-primary flex items-center justify-center shadow-glow">
-                <Users className="w-7 h-7 text-primary-foreground" />
+              <div className="w-12 h-12 mx-auto mb-4 rounded-xl gradient-primary flex items-center justify-center shadow-glow">
+                <Users className="w-6 h-6 text-primary-foreground" />
               </div>
               <h3 className="font-semibold text-lg mb-2">Attendees</h3>
               <p className="text-muted-foreground">Limited Seats</p>
@@ -123,9 +123,9 @@ const Index = () => {
               A day packed with talks, workshops, and networking that will transform how you think about your future
             </p>
             
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 text-center">
               <div className="card-elevated p-6 hover:shadow-glow transition-all animate-slide-up" style={{ animationDelay: '0.1s' }}>
-                <div className="w-12 h-12 rounded-lg bg-accent/20 flex items-center justify-center mb-4">
+                <div className="w-12 h-12 rounded-lg bg-accent/20 flex items-center justify-center mb-4 mx-auto">
                   <Globe className="w-6 h-6 text-accent" />
                 </div>
                 <h3 className="font-bold text-lg mb-2">Global Participation</h3>
@@ -135,7 +135,7 @@ const Index = () => {
               </div>
 
               <div className="card-elevated p-6 hover:shadow-glow transition-all animate-slide-up" style={{ animationDelay: '0.2s' }}>
-                <div className="w-12 h-12 rounded-lg bg-accent/20 flex items-center justify-center mb-4">
+                <div className="w-12 h-12 rounded-lg bg-accent/20 flex items-center justify-center mb-4 mx-auto">
                   <Rocket className="w-6 h-6 text-accent" />
                 </div>
                 <h3 className="font-bold text-lg mb-2">Entrepreneurship Mindset</h3>
@@ -145,7 +145,7 @@ const Index = () => {
               </div>
 
               <div className="card-elevated p-6 hover:shadow-glow transition-all animate-slide-up" style={{ animationDelay: '0.3s' }}>
-                <div className="w-12 h-12 rounded-lg bg-accent/20 flex items-center justify-center mb-4">
+                <div className="w-12 h-12 rounded-lg bg-accent/20 flex items-center justify-center mb-4 mx-auto">
                   <MessageSquare className="w-6 h-6 text-accent" />
                 </div>
                 <h3 className="font-bold text-lg mb-2">Soft Skills Workshop</h3>
@@ -155,7 +155,7 @@ const Index = () => {
               </div>
 
               <div className="card-elevated p-6 hover:shadow-glow transition-all animate-slide-up" style={{ animationDelay: '0.4s' }}>
-                <div className="w-12 h-12 rounded-lg bg-accent/20 flex items-center justify-center mb-4">
+                <div className="w-12 h-12 rounded-lg bg-accent/20 flex items-center justify-center mb-4 mx-auto">
                   <FileText className="w-6 h-6 text-accent" />
                 </div>
                 <h3 className="font-bold text-lg mb-2">Research Paper Guide</h3>
@@ -165,7 +165,7 @@ const Index = () => {
               </div>
 
               <div className="card-elevated p-6 hover:shadow-glow transition-all animate-slide-up" style={{ animationDelay: '0.5s' }}>
-                <div className="w-12 h-12 rounded-lg bg-accent/20 flex items-center justify-center mb-4">
+                <div className="w-12 h-12 rounded-lg bg-accent/20 flex items-center justify-center mb-4 mx-auto">
                   <Network className="w-6 h-6 text-accent" />
                 </div>
                 <h3 className="font-bold text-lg mb-2">Networking Zone</h3>
@@ -175,7 +175,7 @@ const Index = () => {
               </div>
 
               <div className="card-elevated p-6 hover:shadow-glow transition-all animate-slide-up" style={{ animationDelay: '0.6s' }}>
-                <div className="w-12 h-12 rounded-lg bg-accent/20 flex items-center justify-center mb-4">
+                <div className="w-12 h-12 rounded-lg bg-accent/20 flex items-center justify-center mb-4 mx-auto">
                   <Award className="w-6 h-6 text-accent" />
                 </div>
                 <h3 className="font-bold text-lg mb-2">Interactive Games</h3>

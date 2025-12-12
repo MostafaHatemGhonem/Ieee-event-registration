@@ -226,43 +226,60 @@ const Admin = () => {
         <div className="min-h-screen bg-background flex">
             {/* Sidebar */}
             <aside
-                className={`fixed inset-y-0 left-0 z-50 w-64 bg-sidebar transform transition-transform duration-300 ${
+                className={`${
                     sidebarOpen ? "translate-x-0" : "-translate-x-full"
-                } lg:relative lg:translate-x-0`}>
-                <div className="flex flex-col h-full">
-                    <div className="p-4 border-b border-sidebar-border">
+                } md:translate-x-0 fixed md:sticky top-0 left-0 h-screen w-64 bg-sidebar text-sidebar-foreground transition-transform duration-300 ease-in-out z-40 md:z-auto flex flex-col`}
+            >
+                {/* Header */}
+                <div className="p-6 border-b border-sidebar-border">
+                    <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                            <img src={ieeeLogo} alt="IEEE" className="h-8" />
-                            <span className="font-bold text-sidebar-foreground">
-                                Admin Panel
-                            </span>
+                            <img
+                                src={ieeeLogo}
+                                alt="IEEE"
+                                className="h-8 w-auto"
+                            />
+                            <h2 className="text-xl font-bold">Admin Panel</h2>
                         </div>
-                    </div>
-
-                    <nav className="flex-1 p-4 space-y-2">
-                        <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg bg-sidebar-accent text-sidebar-accent-foreground">
-                            <Users className="w-5 h-5" />
-                            Registrations
-                        </button>
                         <button
-                            onClick={() => navigate("/checkin")}
-                            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sidebar-foreground hover:bg-sidebar-accent transition-colors">
-                            <QrCode className="w-5 h-5" />
-                            Check-in Scanner
-                        </button>
-                    </nav>
-
-                    <div className="p-4 border-t border-sidebar-border">
-                        <button
-                            onClick={() => {
-                                logout();
-                                navigate("/login");
-                            }}
-                            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sidebar-foreground hover:bg-sidebar-accent transition-colors">
-                            <LogOut className="w-5 h-5" />
-                            Logout
+                            onClick={() => setSidebarOpen(false)}
+                            className="md:hidden p-1 hover:bg-sidebar-accent rounded"
+                        >
+                            <X className="w-6 h-6" />
                         </button>
                     </div>
+                </div>
+
+                {/* Navigation - Scrollable */}
+                <nav className="flex-1 overflow-y-auto p-4 space-y-2">
+                    <button
+                        onClick={() => navigate("/admin")}
+                        className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-sidebar-accent transition-colors text-left"
+                    >
+                        <Users className="w-5 h-5" />
+                        <span>Registrations</span>
+                    </button>
+                    <button
+                        onClick={() => navigate("/checkin")}
+                        className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-sidebar-accent transition-colors text-left"
+                    >
+                        <QrCode className="w-5 h-5" />
+                        <span>Check-in Scanner</span>
+                    </button>
+                </nav>
+
+                {/* Logout Button - Fixed at bottom */}
+                <div className="p-4 border-t border-sidebar-border bg-sidebar">
+                    <button
+                        onClick={() => {
+                            logout();
+                            navigate("/login");
+                        }}
+                        className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-lg bg-red-500 hover:bg-red-600 transition-colors text-white font-medium"
+                    >
+                        <LogOut className="w-5 h-5" />
+                        <span>Logout</span>
+                    </button>
                 </div>
             </aside>
 
@@ -279,7 +296,7 @@ const Admin = () => {
                 {/* Top bar */}
                 <header className="sticky top-0 z-30 bg-card border-b px-4 py-3 flex items-center gap-3">
                     <button
-                        className="lg:hidden p-2 hover:bg-muted rounded-lg"
+                        className="lg:hidden p-2 hover:bg-sidebar-accent rounded-lg"
                         onClick={() => setSidebarOpen(!sidebarOpen)}
                         aria-label="Toggle sidebar">
                         {sidebarOpen ? (
@@ -323,7 +340,7 @@ const Admin = () => {
                             <div className="text-sm text-muted-foreground">
                                 Pending
                             </div>
-                            <div className="text-2xl font-bold text-secondary">
+                            <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-500">
                                 {stats.pending}
                             </div>
                         </div>
@@ -373,11 +390,16 @@ const Admin = () => {
                                 <Button
                                     variant={
                                         statusFilter === "pending"
-                                            ? "secondary"
+                                            ? "default"
                                             : "outline"
                                     }
                                     size="sm"
-                                    onClick={() => setStatusFilter("pending")}>
+                                    onClick={() => setStatusFilter("pending")}
+                                    className={
+                                        statusFilter === "pending"
+                                            ? "bg-yellow-600 hover:bg-yellow-600/90 text-white"
+                                            : ""
+                                    }>
                                     Pending
                                 </Button>
                                 <Button
