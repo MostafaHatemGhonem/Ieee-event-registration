@@ -7,9 +7,9 @@ import QRCode from 'qrcode';
  */
 export async function generateQRCodeBase64(attendeeId: string): Promise<string> {
   try {
-    // Create unique QR data with format: IEEE-BSU-{id}-{timestamp}
-    const timestamp = Date.now();
-    const qrData = `IEEE-BSU-${attendeeId}-${timestamp}`;
+    // Create unique QR data with format: IEEE-BSU-{nationalId}
+    // attendeeId is already unique (nationalId or nationalId-timestamp)
+    const qrData = `IEEE-BSU-${attendeeId}`;
     
     // Generate QR code as base64 data URL
     const qrCodeDataUrl = await QRCode.toDataURL(qrData, {
@@ -36,8 +36,8 @@ export async function generateQRCodeBase64(attendeeId: string): Promise<string> 
  */
 export async function generateQRCodeBlob(attendeeId: string): Promise<Blob> {
   try {
-    const timestamp = Date.now();
-    const qrData = `IEEE-BSU-${attendeeId}-${timestamp}`;
+    // attendeeId is already unique (nationalId or nationalId-timestamp)
+    const qrData = `IEEE-BSU-${attendeeId}`;
     
     // Generate QR code as canvas
     const canvas = document.createElement('canvas');
@@ -70,12 +70,13 @@ export async function generateQRCodeBlob(attendeeId: string): Promise<Blob> {
 /**
  * Extract attendee ID from scanned QR data
  * @param qrData - Scanned QR code data
- * @returns string | null - Extracted attendee ID or null if invalid
+ * @returns string | null - Extracted attendee ID (nationalId or nationalId-timestamp) or null if invalid
  */
 export function extractAttendeeIdFromQR(qrData: string): string | null {
   try {
-    // Expected format: IEEE-BSU-{id}-{timestamp}
-    const match = qrData.match(/^IEEE-BSU-([^-]+)-\d+$/);
+    // Expected format: IEEE-BSU-{nationalId} or IEEE-BSU-{nationalId-timestamp}
+    // Extract everything after 'IEEE-BSU-'
+    const match = qrData.match(/^IEEE-BSU-(.+)$/);
     return match ? match[1] : null;
   } catch (error) {
     console.error('Error extracting ID from QR:', error);
@@ -89,5 +90,6 @@ export function extractAttendeeIdFromQR(qrData: string): string | null {
  * @returns boolean - True if valid IEEE QR code format
  */
 export function isValidIEEEQRCode(qrData: string): boolean {
-  return /^IEEE-BSU-[^-]+-\d+$/.test(qrData);
+  // Accept format: IEEE-BSU-{nationalId} or IEEE-BSU-{nationalId-timestamp}
+  return /^IEEE-BSU-.+$/.test(qrData);
 }

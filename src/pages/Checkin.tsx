@@ -39,7 +39,7 @@ const Checkin = () => {
       return;
     }
     
-    // Extract ID from QR data (format: IEEE-BSU-{nationalId-timestamp})
+    // Extract ID from QR data (format: IEEE-BSU-{nationalId} or IEEE-BSU-{nationalId-timestamp})
     const extractedData = extractAttendeeIdFromQR(qrData);
     if (!extractedData) {
       toast({
@@ -50,8 +50,10 @@ const Checkin = () => {
       return;
     }
     
-    // Extract national ID from the extracted data (format: nationalId-timestamp)
-    const nationalId = extractedData.split('-')[0];
+    // Extract national ID from the extracted data
+    // If format is nationalId-timestamp, take only the first part (14-digit national ID)
+    // If format is just nationalId, use it directly
+    const nationalId = extractedData.includes('-') ? extractedData.split('-')[0] : extractedData;
     
     try {
       const registrations = await getAllRegistrations();
