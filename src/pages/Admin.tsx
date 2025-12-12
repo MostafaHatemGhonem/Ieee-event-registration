@@ -441,8 +441,7 @@ const Admin = () => {
                             <div className="flex items-center justify-center py-12">
                                 <Loader2 className="w-8 h-8 animate-spin text-accent" />
                                 <span className="mr-3 text-muted-foreground">
-                                    جاري التحميل...
-                                </span>
+                                   ... جاري التحميل                               </span>
                             </div>
                         ) : (
                             <>
@@ -590,7 +589,7 @@ const Admin = () => {
                                     <label className="text-sm text-muted-foreground">
                                         Full Name (Arabic)
                                     </label>
-                                    <p className="font-medium" dir="rtl">
+                                    <p className="font-medium break-words" dir="rtl">
                                         {selectedReg.fullNameArabic}
                                     </p>
                                 </div>
@@ -598,7 +597,7 @@ const Admin = () => {
                                     <label className="text-sm text-muted-foreground">
                                         Full Name (English)
                                     </label>
-                                    <p className="font-medium">
+                                    <p className="font-medium break-words">
                                         {selectedReg.fullNameEnglish}
                                     </p>
                                 </div>
@@ -606,7 +605,7 @@ const Admin = () => {
                                     <label className="text-sm text-muted-foreground">
                                         Email
                                     </label>
-                                    <p className="font-medium">
+                                    <p className="font-medium break-all">
                                         {selectedReg.email}
                                     </p>
                                 </div>
@@ -614,7 +613,7 @@ const Admin = () => {
                                     <label className="text-sm text-muted-foreground">
                                         Phone
                                     </label>
-                                    <p className="font-medium">
+                                    <p className="font-medium break-words">
                                         {selectedReg.phone}
                                     </p>
                                 </div>
@@ -622,7 +621,7 @@ const Admin = () => {
                                     <label className="text-sm text-muted-foreground">
                                         National ID
                                     </label>
-                                    <p className="font-medium">
+                                    <p className="font-medium break-words">
                                         {selectedReg.nationalId}
                                     </p>
                                 </div>
@@ -630,7 +629,7 @@ const Admin = () => {
                                     <label className="text-sm text-muted-foreground">
                                         Governorate
                                     </label>
-                                    <p className="font-medium">
+                                    <p className="font-medium break-words">
                                         {selectedReg.governorate}
                                     </p>
                                 </div>
@@ -638,7 +637,7 @@ const Admin = () => {
                                     <label className="text-sm text-muted-foreground">
                                         Faculty
                                     </label>
-                                    <p className="font-medium">
+                                    <p className="font-medium break-words">
                                         {selectedReg.faculty}
                                     </p>
                                 </div>
@@ -646,7 +645,7 @@ const Admin = () => {
                                     <label className="text-sm text-muted-foreground">
                                         Academic Year
                                     </label>
-                                    <p className="font-medium">
+                                    <p className="font-medium break-words">
                                         {selectedReg.academicYear}
                                     </p>
                                 </div>
@@ -654,7 +653,7 @@ const Admin = () => {
                                     <label className="text-sm text-muted-foreground">
                                         Age
                                     </label>
-                                    <p className="font-medium">
+                                    <p className="font-medium break-words">
                                         {selectedReg.age}
                                     </p>
                                 </div>
@@ -662,7 +661,7 @@ const Admin = () => {
                                     <label className="text-sm text-muted-foreground">
                                         Gender
                                     </label>
-                                    <p className="font-medium">
+                                    <p className="font-medium break-words">
                                         {selectedReg.gender === "male"
                                             ? "Male"
                                             : "Female"}
@@ -672,7 +671,7 @@ const Admin = () => {
                                     <label className="text-sm text-muted-foreground">
                                         Payment Code
                                     </label>
-                                    <p className="font-medium">
+                                    <p className="font-medium break-words">
                                         {selectedReg.paymentCode}
                                     </p>
                                 </div>
@@ -742,8 +741,7 @@ const Admin = () => {
                                         <p className="text-sm text-destructive font-medium">
                                             Rejection Reason:
                                         </p>
-                                        ```
-                                        <p className="text-sm">
+                                        <p className="text-sm break-words">
                                             {selectedReg.rejectionReason}
                                         </p>
                                     </div>
@@ -752,7 +750,7 @@ const Admin = () => {
                     )}
                     <DialogFooter className="flex-col sm:flex-row gap-2">
                         {/* Edit Mode Toggle */}
-                        <Button
+                        {/* <Button
                             variant="outline"
                             onClick={() => {
                                 if (isEditMode) {
@@ -769,10 +767,10 @@ const Admin = () => {
                                 }
                             }}>
                             {isEditMode ? "Save Changes" : "Edit Data"}
-                        </Button>
+                        </Button> */}
 
                         {/* Status Management Buttons */}
-                        {(selectedReg?.status || "").toLowerCase() === "pending" && (
+                        {/* {(selectedReg?.status || "").toLowerCase() === "pending" && (
                             <>
                                 <Button
                                     variant="outline"
@@ -788,7 +786,7 @@ const Admin = () => {
                                     Approve
                                 </Button>
                             </>
-                        )}
+                        )} */}
 
                         {/* Revert to Pending for Approved/Rejected */}
                         {((selectedReg?.status || "").toLowerCase() === "approved" ||

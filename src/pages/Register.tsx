@@ -55,6 +55,7 @@ const Register = () => {
         gender: "",
         paymentCode: "",
         isNeedBus: false,
+        isIEEEIAN: false,
     });
     const [customFaculty, setCustomFaculty] = useState("");
     const [paymentFile, setPaymentFile] = useState<File | null>(null);
@@ -162,6 +163,7 @@ const Register = () => {
         if (!validateStep(4)) return;
 
         setIsSubmitting(true);
+        
         try {
             // Generate temporary ID for QR code (using national ID + timestamp for uniqueness)
             const tempId = `${formData.nationalId}-${Date.now()}`;
@@ -182,8 +184,9 @@ const Register = () => {
                         ? customFaculty.trim()
                         : formData.faculty,
                 isNeedBus: formData.isNeedBus ?? false,
+                isIEEEIAN: formData.isIEEEIAN ?? false,
             };
-
+            console.log(finalFormData)
             // إرسال البيانات إلى الـ Backend API مع QR Code
             const response = await submitRegistration(
                 finalFormData as Omit<
@@ -300,11 +303,11 @@ const Register = () => {
                                             <Input
                                                 id="fullNameArabic"
                                                 dir="rtl"
-                                                placeholder="First - Second - Third - Last Name"
+                                                placeholder="الاسم الأول - الأب - الجد - العائلة"
                                                 value={formData.fullNameArabic}
                                                 onChange={(e) => {
-                                                    // Only allow Arabic characters, spaces, and hyphens
-                                                    const value = e.target.value.replace(/[a-zA-Z0-9]/g, '');
+                                                    // Allow Arabic characters, spaces, hyphens, and Arabic numbers
+                                                    const value = e.target.value.replace(/[^\u0600-\u06FF\s-]/g, '');
                                                     updateField(
                                                         "fullNameArabic",
                                                         value
@@ -443,6 +446,33 @@ const Register = () => {
                                                         {errors.gender}
                                                     </p>
                                                 )}
+                                            </div>
+                                        </div>
+
+                                        {/* IEEE Membership Checkbox */}
+                                        <div className="border-2 border-accent/30 rounded-lg p-4 bg-accent/5 hover:border-accent/50 transition-colors">
+                                            <div className="flex items-start gap-3">
+                                                <Checkbox
+                                                    id="isIEEEIAN"
+                                                    checked={!!formData.isIEEEIAN}
+                                                    onCheckedChange={(checked) =>
+                                                        setFormData((prev) => ({
+                                                            ...prev,
+                                                            isIEEEIAN: !!checked,
+                                                        }))
+                                                    }
+                                                    className="h-5 w-5 mt-0.5"
+                                                />
+                                                <div className="flex-1">
+                                                    <Label
+                                                        htmlFor="isIEEEIAN"
+                                                        className="cursor-pointer font-semibold text-base">
+                                                        Are you a member of IEEE?
+                                                    </Label>
+                                                    <p className="text-sm text-muted-foreground mt-1">
+                                                        Check this box if you are currently an IEEE member
+                                                    </p>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -875,7 +905,7 @@ const Register = () => {
                                         </>
                                     ) : (
                                         <>
-                                            Submit Registration
+                                            Register
                                             <CheckCircle2 className="w-4 h-4" />
                                         </>
                                     )}
