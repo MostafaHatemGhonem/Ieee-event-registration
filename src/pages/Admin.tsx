@@ -441,8 +441,7 @@ const Admin = () => {
                             <div className="flex items-center justify-center py-12">
                                 <Loader2 className="w-8 h-8 animate-spin text-accent" />
                                 <span className="mr-3 text-muted-foreground">
-                                    جاري التحميل...
-                                </span>
+                                   ... جاري التحميل                               </span>
                             </div>
                         ) : (
                             <>
@@ -591,7 +590,11 @@ const Admin = () => {
                                     <label className="text-xs text-muted-foreground">
                                         الاسم بالعربي
                                     </label>
+<<<<<<< HEAD
                                     <p className="font-medium text-right" dir="rtl">
+=======
+                                    <p className="font-medium break-words" dir="rtl">
+>>>>>>> 3f70c1328684765d8c334f1c73d48e5463715fe6
                                         {selectedReg.fullNameArabic}
                                     </p>
                                 </div>
@@ -601,7 +604,11 @@ const Admin = () => {
                                     <label className="text-xs text-muted-foreground">
                                         Full Name (English)
                                     </label>
+<<<<<<< HEAD
                                     <p className="font-medium text-left" dir="ltr">
+=======
+                                    <p className="font-medium break-words">
+>>>>>>> 3f70c1328684765d8c334f1c73d48e5463715fe6
                                         {selectedReg.fullNameEnglish}
                                     </p>
                                 </div>
@@ -611,7 +618,11 @@ const Admin = () => {
                                     <label className="text-xs text-muted-foreground">
                                         Email
                                     </label>
+<<<<<<< HEAD
                                     <p className="font-medium text-left break-all" dir="ltr">
+=======
+                                    <p className="font-medium break-all">
+>>>>>>> 3f70c1328684765d8c334f1c73d48e5463715fe6
                                         {selectedReg.email}
                                     </p>
                                 </div>
@@ -621,7 +632,11 @@ const Admin = () => {
                                     <label className="text-xs text-muted-foreground">
                                         Phone
                                     </label>
+<<<<<<< HEAD
                                     <p className="font-medium text-left" dir="ltr">
+=======
+                                    <p className="font-medium break-words">
+>>>>>>> 3f70c1328684765d8c334f1c73d48e5463715fe6
                                         {selectedReg.phone}
                                     </p>
                                 </div>
@@ -631,7 +646,11 @@ const Admin = () => {
                                     <label className="text-xs text-muted-foreground">
                                         National ID
                                     </label>
+<<<<<<< HEAD
                                     <p className="font-medium text-left" dir="ltr">
+=======
+                                    <p className="font-medium break-words">
+>>>>>>> 3f70c1328684765d8c334f1c73d48e5463715fe6
                                         {selectedReg.nationalId}
                                     </p>
                                 </div>
@@ -641,7 +660,11 @@ const Admin = () => {
                                     <label className="text-xs text-muted-foreground">
                                         المحافظة
                                     </label>
+<<<<<<< HEAD
                                     <p className="font-medium text-right" dir="rtl">
+=======
+                                    <p className="font-medium break-words">
+>>>>>>> 3f70c1328684765d8c334f1c73d48e5463715fe6
                                         {selectedReg.governorate}
                                     </p>
                                 </div>
@@ -651,7 +674,11 @@ const Admin = () => {
                                     <label className="text-xs text-muted-foreground">
                                         الكلية
                                     </label>
+<<<<<<< HEAD
                                     <p className="font-medium text-right" dir="rtl">
+=======
+                                    <p className="font-medium break-words">
+>>>>>>> 3f70c1328684765d8c334f1c73d48e5463715fe6
                                         {selectedReg.faculty}
                                     </p>
                                 </div>
@@ -661,7 +688,11 @@ const Admin = () => {
                                     <label className="text-xs text-muted-foreground">
                                         السنة الدراسية
                                     </label>
+<<<<<<< HEAD
                                     <p className="font-medium text-right" dir="rtl">
+=======
+                                    <p className="font-medium break-words">
+>>>>>>> 3f70c1328684765d8c334f1c73d48e5463715fe6
                                         {selectedReg.academicYear}
                                     </p>
                                 </div>
@@ -671,7 +702,11 @@ const Admin = () => {
                                     <label className="text-xs text-muted-foreground">
                                         Age
                                     </label>
+<<<<<<< HEAD
                                     <p className="font-medium text-left" dir="ltr">
+=======
+                                    <p className="font-medium break-words">
+>>>>>>> 3f70c1328684765d8c334f1c73d48e5463715fe6
                                         {selectedReg.age}
                                     </p>
                                 </div>
@@ -681,8 +716,15 @@ const Admin = () => {
                                     <label className="text-xs text-muted-foreground">
                                         Gender
                                     </label>
+<<<<<<< HEAD
                                     <p className="font-medium text-left" dir="ltr">
                                         {selectedReg.gender === "male" ? "Male" : "Female"}
+=======
+                                    <p className="font-medium break-words">
+                                        {selectedReg.gender === "male"
+                                            ? "Male"
+                                            : "Female"}
+>>>>>>> 3f70c1328684765d8c334f1c73d48e5463715fe6
                                     </p>
                                 </div>
                                 
@@ -691,7 +733,11 @@ const Admin = () => {
                                     <label className="text-xs text-muted-foreground">
                                         Payment Code
                                     </label>
+<<<<<<< HEAD
                                     <p className="font-medium text-left font-mono" dir="ltr">
+=======
+                                    <p className="font-medium break-words">
+>>>>>>> 3f70c1328684765d8c334f1c73d48e5463715fe6
                                         {selectedReg.paymentCode}
                                     </p>
                                 </div>
@@ -763,8 +809,7 @@ const Admin = () => {
                                         <p className="text-sm text-destructive font-medium">
                                             Rejection Reason:
                                         </p>
-                                        ```
-                                        <p className="text-sm">
+                                        <p className="text-sm break-words">
                                             {selectedReg.rejectionReason}
                                         </p>
                                     </div>
@@ -773,7 +818,7 @@ const Admin = () => {
                     )}
                     <DialogFooter className="flex-col sm:flex-row gap-2">
                         {/* Edit Mode Toggle */}
-                        <Button
+                        {/* <Button
                             variant="outline"
                             onClick={() => {
                                 if (isEditMode) {
@@ -790,10 +835,10 @@ const Admin = () => {
                                 }
                             }}>
                             {isEditMode ? "Save Changes" : "Edit Data"}
-                        </Button>
+                        </Button> */}
 
                         {/* Status Management Buttons */}
-                        {(selectedReg?.status || "").toLowerCase() === "pending" && (
+                        {/* {(selectedReg?.status || "").toLowerCase() === "pending" && (
                             <>
                                 <Button
                                     variant="outline"
@@ -809,7 +854,7 @@ const Admin = () => {
                                     Approve
                                 </Button>
                             </>
-                        )}
+                        )} */}
 
                         {/* Revert to Pending for Approved/Rejected */}
                         {((selectedReg?.status || "").toLowerCase() === "approved" ||

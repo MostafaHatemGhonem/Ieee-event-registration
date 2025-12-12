@@ -17,6 +17,7 @@ export interface RegistrationData {
     qrCodePath?: string; // Path to QR code image
     qrCode?: string; // Full URL to QR code
     isNeedBus: boolean; // Whether attendee needs bus transportation
+    isIEEEIAN?: boolean; // Whether user is an IEEE member
     checkInTime?: string | null; // ISO datetime or null if not checked in
     checkedIn?: boolean; // Computed from checkInTime
     checkedInAt?: string; // Alias for checkInTime

@@ -93,6 +93,7 @@ export async function submitRegistration(
         faculty: "College", // Backend expects 'College' not 'faculty'
         paymentCode: "PaymentCode", // Backend expects 'PaymentCode'
         isNeedBus: "IsNeedBus",
+        isIEEEIAN: "ISIEEEIAN",
         fullNameArabic: "FullNameArabic",
         fullNameEnglish: "FullNameEnglish",
         nationalId: "NationalId",
@@ -105,7 +106,8 @@ export async function submitRegistration(
     };
 
     Object.entries(data).forEach(([key, value]) => {
-        if (value !== undefined && value !== null && value !== "") {
+        // Always include boolean values (true or false), skip only if undefined/null/empty string
+        if (value !== undefined && value !== null && (typeof value === 'boolean' || value !== "")) {
             // Use mapped field name if exists, otherwise use original
             const backendKey = fieldMapping[key] || key;
             formData.append(backendKey, value.toString());
