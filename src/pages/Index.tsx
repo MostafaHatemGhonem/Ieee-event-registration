@@ -238,9 +238,9 @@ const Index = () => {
             <Link to="/register">
               <Button 
                 size="xl" 
-                className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 shadow-lg hover:scale-105 transition-transform"
+                className="w-full sm:w-auto bg-primary-foreground text-primary hover:bg-primary-foreground/90 shadow-lg hover:scale-105 transition-transform"
               >
-                Register Now - Secure Your Spot
+                Register Now
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </Link>
