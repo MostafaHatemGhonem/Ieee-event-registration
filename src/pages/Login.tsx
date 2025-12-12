@@ -81,21 +81,21 @@ const Login = () => {
             <div>
               <div className="space-y-2">
               <label htmlFor="email" className="text-sm font-medium">
-                البريد الإلكتروني أو اسم المستخدم
+                Email Or UserName
               </label>
               <Input
                 id="email"
                 type="text"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@example.com أو Admin"
+                placeholder="admin@example.com or Admin"
                 required
                 className="text"
               /></div>
             </div>
 
             <div>
-              <Label htmlFor="password">كلمة المرور</Label>
+              <Label htmlFor="password">Password</Label>
               <div className="relative mt-2">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <Input
@@ -120,12 +120,12 @@ const Login = () => {
               {isLoading ? (
                 <>
                   <div className="w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin mr-2" />
-                  جاري تسجيل الدخول...
+                  Loading...
                 </>
               ) : (
                 <>
                   <Shield className="w-5 h-5 mr-2" />
-                  تسجيل الدخول
+                  Login
                 </>
               )}
             </Button>
@@ -138,7 +138,7 @@ const Login = () => {
               onClick={() => navigate('/')}
               className="text-sm"
             >
-              العودة للرئيسية
+              Back To Home
             </Button>
           </div>
         </div>

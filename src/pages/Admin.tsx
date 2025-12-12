@@ -372,7 +372,7 @@ const Admin = () => {
                             <div className="relative flex-1">
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                                 <Input
-                                    placeholder="Search by name, email, governorate..."
+                                    placeholder="Search"
                                     value={searchTerm}
                                     onChange={(e) =>
                                         setSearchTerm(e.target.value)
@@ -585,99 +585,120 @@ const Admin = () => {
                     </DialogHeader>
                     {selectedReg && (
                         <div className="space-y-4">
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label className="text-sm text-muted-foreground">
-                                        Full Name (Arabic)
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
+                                {/* Arabic Name - RTL */}
+                                <div className="space-y-1">
+                                    <label className="text-xs text-muted-foreground">
+                                        الاسم بالعربي
                                     </label>
-                                    <p className="font-medium" dir="rtl">
+                                    <p className="font-medium text-right" dir="rtl">
                                         {selectedReg.fullNameArabic}
                                     </p>
                                 </div>
-                                <div>
-                                    <label className="text-sm text-muted-foreground">
+                                
+                                {/* English Name - LTR */}
+                                <div className="space-y-1">
+                                    <label className="text-xs text-muted-foreground">
                                         Full Name (English)
                                     </label>
-                                    <p className="font-medium">
+                                    <p className="font-medium text-left" dir="ltr">
                                         {selectedReg.fullNameEnglish}
                                     </p>
                                 </div>
-                                <div>
-                                    <label className="text-sm text-muted-foreground">
+                                
+                                {/* Email - LTR, handle overflow */}
+                                <div className="space-y-1">
+                                    <label className="text-xs text-muted-foreground">
                                         Email
                                     </label>
-                                    <p className="font-medium">
+                                    <p className="font-medium text-left break-all" dir="ltr">
                                         {selectedReg.email}
                                     </p>
                                 </div>
-                                <div>
-                                    <label className="text-sm text-muted-foreground">
+                                
+                                {/* Phone - LTR */}
+                                <div className="space-y-1">
+                                    <label className="text-xs text-muted-foreground">
                                         Phone
                                     </label>
-                                    <p className="font-medium">
+                                    <p className="font-medium text-left" dir="ltr">
                                         {selectedReg.phone}
                                     </p>
                                 </div>
-                                <div>
-                                    <label className="text-sm text-muted-foreground">
+                                
+                                {/* National ID - LTR */}
+                                <div className="space-y-1">
+                                    <label className="text-xs text-muted-foreground">
                                         National ID
                                     </label>
-                                    <p className="font-medium">
+                                    <p className="font-medium text-left" dir="ltr">
                                         {selectedReg.nationalId}
                                     </p>
                                 </div>
-                                <div>
-                                    <label className="text-sm text-muted-foreground">
-                                        Governorate
+                                
+                                {/* Governorate - RTL */}
+                                <div className="space-y-1">
+                                    <label className="text-xs text-muted-foreground">
+                                        المحافظة
                                     </label>
-                                    <p className="font-medium">
+                                    <p className="font-medium text-right" dir="rtl">
                                         {selectedReg.governorate}
                                     </p>
                                 </div>
-                                <div>
-                                    <label className="text-sm text-muted-foreground">
-                                        Faculty
+                                
+                                {/* Faculty - RTL */}
+                                <div className="space-y-1">
+                                    <label className="text-xs text-muted-foreground">
+                                        الكلية
                                     </label>
-                                    <p className="font-medium">
+                                    <p className="font-medium text-right" dir="rtl">
                                         {selectedReg.faculty}
                                     </p>
                                 </div>
-                                <div>
-                                    <label className="text-sm text-muted-foreground">
-                                        Academic Year
+                                
+                                {/* Academic Year - RTL */}
+                                <div className="space-y-1">
+                                    <label className="text-xs text-muted-foreground">
+                                        السنة الدراسية
                                     </label>
-                                    <p className="font-medium">
+                                    <p className="font-medium text-right" dir="rtl">
                                         {selectedReg.academicYear}
                                     </p>
                                 </div>
-                                <div>
-                                    <label className="text-sm text-muted-foreground">
+                                
+                                {/* Age - LTR */}
+                                <div className="space-y-1">
+                                    <label className="text-xs text-muted-foreground">
                                         Age
                                     </label>
-                                    <p className="font-medium">
+                                    <p className="font-medium text-left" dir="ltr">
                                         {selectedReg.age}
                                     </p>
                                 </div>
-                                <div>
-                                    <label className="text-sm text-muted-foreground">
+                                
+                                {/* Gender - LTR */}
+                                <div className="space-y-1">
+                                    <label className="text-xs text-muted-foreground">
                                         Gender
                                     </label>
-                                    <p className="font-medium">
-                                        {selectedReg.gender === "male"
-                                            ? "Male"
-                                            : "Female"}
+                                    <p className="font-medium text-left" dir="ltr">
+                                        {selectedReg.gender === "male" ? "Male" : "Female"}
                                     </p>
                                 </div>
-                                <div>
-                                    <label className="text-sm text-muted-foreground">
+                                
+                                {/* Payment Code - LTR */}
+                                <div className="space-y-1">
+                                    <label className="text-xs text-muted-foreground">
                                         Payment Code
                                     </label>
-                                    <p className="font-medium">
+                                    <p className="font-medium text-left font-mono" dir="ltr">
                                         {selectedReg.paymentCode}
                                     </p>
                                 </div>
-                                <div>
-                                    <label className="text-sm text-muted-foreground">
+                                
+                                {/* Status */}
+                                <div className="space-y-1">
+                                    <label className="text-xs text-muted-foreground">
                                         Status
                                     </label>
                                     <div>

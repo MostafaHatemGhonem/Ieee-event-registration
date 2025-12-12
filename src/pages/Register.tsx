@@ -82,7 +82,7 @@ const Register = () => {
                 !formData.fullNameArabic ||
                 formData.fullNameArabic.split(" ").length < 4
             ) {
-                newErrors.fullNameArabic = "يرجى إدخال الاسم الرباعي كاملاً";
+                newErrors.fullNameArabic = "Please enter your full name (four names).";
             }
             if (
                 !formData.fullNameEnglish ||
@@ -92,55 +92,55 @@ const Register = () => {
                     "Please enter your full 4-part name";
             }
             if (!formData.nationalId || formData.nationalId.length !== 14) {
-                newErrors.nationalId = "الرقم القومي يجب أن يكون 14 رقم";
+                newErrors.nationalId = "National ID must be 14 digits.";
             }
             if (!formData.gender) {
-                newErrors.gender = "يرجى اختيار الجنس";
+                newErrors.gender = "Please select gender.";
             }
             const ageValue = formData.age?.toString() ?? "";
             const ageNum = parseInt(ageValue, 10);
             if (!ageValue || isNaN(ageNum) || ageNum < 16 || ageNum > 50) {
-                newErrors.age = "العمر يجب أن يكون بين 16 و 50";
+                newErrors.age = "Age must be between 16 and 50.";
             }
         }
 
         if (step === 2) {
             if (!formData.phone || !/^01[0125][0-9]{8}$/.test(formData.phone)) {
-                newErrors.phone = "يرجى إدخال رقم هاتف صحيح";
+                newErrors.phone = "Please enter a valid phone number.";
             }
             if (
                 !formData.email ||
                 !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
             ) {
-                newErrors.email = "يرجى إدخال بريد إلكتروني صحيح";
+                newErrors.email = "Please enter a valid email address.";
             }
             if (!formData.governorate) {
-                newErrors.governorate = "يرجى اختيار المحافظة";
+                newErrors.governorate = "Please select a governorate.";
             }
         }
 
         if (step === 3) {
             if (!formData.faculty) {
-                newErrors.faculty = "يرجى اختيار الكلية";
+                newErrors.faculty = "Please select a faculty.";
             }
             if (formData.faculty === "أخرى" && !customFaculty.trim()) {
-                newErrors.customFaculty = "يرجى إدخال اسم الكلية";
+                newErrors.customFaculty = "Please enter the faculty name.";
             }
             if (!formData.academicYear) {
-                newErrors.academicYear = "يرجى اختيار السنة الدراسية";
+                newErrors.academicYear = "Please select an academic year.";
             }
         }
 
         if (step === 4) {
             // رقم المحفظة 11 رقم فقط
             if (!formData.paymentCode || formData.paymentCode.length !== 11) {
-                newErrors.paymentCode = "يرجى إدخال 11 رقم بالضبط";
+                newErrors.paymentCode = "Please enter exactly 11 digits.";
             } else if (!/^\d{11}$/.test(formData.paymentCode)) {
-                newErrors.paymentCode = "يجب أن يحتوي على أرقام فقط";
+                newErrors.paymentCode = "It must contain only numbers.";
             }
             // صورة الدفع إجبارية
             if (!paymentFile) {
-                newErrors.paymentScreenshot = "يرجى رفع صورة إيصال الدفع";
+                newErrors.paymentScreenshot = "Please upload a payment screenshot.";
             }
         }
 
@@ -168,8 +168,8 @@ const Register = () => {
 
             // Generate QR Code
             toast({
-                title: "جاري التحضير...",
-                description: "جاري إنشاء رمز QR الخاص بك",
+                title: "Preparing...",
+                description: "Creating your QR code",
             });
 
             const qrCodeBlob = await generateQRCodeBlob(tempId);
@@ -199,17 +199,17 @@ const Register = () => {
             setSubmitted(true);
 
             toast({
-                title: "تم التسجيل بنجاح!",
-                description: "سيتم مراجعة طلبك وإرسال بريد إلكتروني للتأكيد",
+                title: "Registration successful!",
+                description: "Your request will be reviewed and a confirmation email will be sent.",
             });
         } catch (error) {
             console.error("Registration error:", error);
             toast({
-                title: "خطأ",
+                title: "Error",
                 description:
                     error instanceof Error
                         ? error.message
-                        : "حدث خطأ أثناء التسجيل. يرجى المحاولة مرة أخرى",
+                        : "An error occurred during registration. Please try again.",
                 variant: "destructive",
             });
         } finally {
@@ -299,7 +299,6 @@ const Register = () => {
                                             </Label>
                                             <Input
                                                 id="fullNameArabic"
-                                                dir="rtl"
                                                 placeholder="First - Second - Third - Last Name"
                                                 value={formData.fullNameArabic}
                                                 onChange={(e) => {
@@ -354,12 +353,11 @@ const Register = () => {
 
                                         <div>
                                             <Label htmlFor="nationalId">
-                                                الرقم القومي *
+                                                National ID
                                             </Label>
                                             <Input
                                                 id="nationalId"
-                                                dir="rtl"
-                                                placeholder="14 رقم"
+                                                placeholder="14 digits"
                                                 maxLength={14}
                                                 value={formData.nationalId}
                                                 onChange={(e) =>
@@ -387,7 +385,7 @@ const Register = () => {
                                         <div className="grid grid-cols-2 gap-4">
                                             <div>
                                                 <Label htmlFor="age">
-                                                    العمر *
+                                                    Age*
                                                 </Label>
                                                 <Input
                                                     id="age"
@@ -415,7 +413,7 @@ const Register = () => {
                                             </div>
 
                                             <div>
-                                                <Label>الجنس *</Label>
+                                                <Label>Gender *</Label>
                                                 <Select
                                                     value={formData.gender}
                                                     onValueChange={(v) =>
@@ -427,14 +425,14 @@ const Register = () => {
                                                                 ? "border-destructive"
                                                                 : ""
                                                         }>
-                                                        <SelectValue placeholder="اختر" />
+                                                        <SelectValue placeholder="Select" />
                                                     </SelectTrigger>
                                                     <SelectContent>
                                                         <SelectItem value="male">
-                                                            ذكر
+                                                            Male
                                                         </SelectItem>
                                                         <SelectItem value="female">
-                                                            أنثى
+                                                            Female
                                                         </SelectItem>
                                                     </SelectContent>
                                                 </Select>
@@ -461,11 +459,10 @@ const Register = () => {
                                     <div className="space-y-4">
                                         <div>
                                             <Label htmlFor="phone">
-                                                رقم الهاتف *
+                                                Phone
                                             </Label>
                                             <Input
                                                 id="phone"
-                                                dir="rtl"
                                                 placeholder="01xxxxxxxxx"
                                                 maxLength={11}
                                                 value={formData.phone}
@@ -493,7 +490,7 @@ const Register = () => {
 
                                         <div>
                                             <Label htmlFor="email">
-                                                البريد الإلكتروني *
+                                                Email *
                                             </Label>
                                             <Input
                                                 id="email"
@@ -745,35 +742,6 @@ const Register = () => {
                                             </p>
                                         </div>
 
-                                        {/* Bus Question - Enhanced */}
-                                        <div className="border-2 border-accent/30 rounded-lg p-4 bg-accent/5 hover:border-accent/50 transition-colors">
-                                            <div className="flex items-start gap-3">
-                                                <div className="flex-1">
-                                                    <div className="flex items-center gap-3">
-                                                        <Checkbox
-                                                            id="isNeedBus"
-                                                            checked={!!formData.isNeedBus}
-                                                            onCheckedChange={(checked) =>
-                                                                setFormData((prev) => ({
-                                                                    ...prev,
-                                                                    isNeedBus: !!checked,
-                                                                }))
-                                                            }
-                                                            className="h-5 w-5"
-                                                        />
-                                                        <Label
-                                                            htmlFor="isNeedBus"
-                                                            className="cursor-pointer font-semibold text-base">
-                                                            Do you need a bus to get to the event?
-                                                        </Label>
-                                                    </div>
-                                                    <p className="text-sm text-muted-foreground mr-8 mt-1">
-                                                        Will be provided free transportation from and to the event location.
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-
                                         <div>
                                             <Label>صورة إيصال الدفع *</Label>
                                             <div
@@ -839,6 +807,35 @@ const Register = () => {
                                                 </p>
                                             )}
                                         </div>
+
+                                        {/* Bus Question - Enhanced */}
+                                        <div className="border-2 border-accent/30 rounded-lg p-4 bg-accent/5 hover:border-accent/50 transition-colors">
+                                            <div className="flex items-start gap-3">
+                                                <div className="flex-1">
+                                                    <div className="flex items-center gap-3">
+                                                        <Checkbox
+                                                            id="isNeedBus"
+                                                            checked={!!formData.isNeedBus}
+                                                            onCheckedChange={(checked) =>
+                                                                setFormData((prev) => ({
+                                                                    ...prev,
+                                                                    isNeedBus: !!checked,
+                                                                }))
+                                                            }
+                                                            className="h-5 w-5"
+                                                        />
+                                                        <Label
+                                                            htmlFor="isNeedBus"
+                                                            className="cursor-pointer font-semibold text-base">
+                                                            Do you need a bus to get to the event?
+                                                        </Label>
+                                                    </div>
+                                                    <p className="text-sm text-muted-foreground mr-8 mt-1">
+                                                        Will be provided free transportation from and to the event location.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </>
                             )}
@@ -875,7 +872,7 @@ const Register = () => {
                                         </>
                                     ) : (
                                         <>
-                                            Submit Registration
+                                            Submit
                                             <CheckCircle2 className="w-4 h-4" />
                                         </>
                                     )}

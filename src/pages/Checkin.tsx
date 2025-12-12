@@ -365,12 +365,12 @@ const Checkin = () => {
 
                             {/* Manual Entry */}
                             <div className="mt-6">
-                                <p className="text-sm text-muted-foreground mb-2">
-                                    Or enter code manually:
+                                <p className="text-sm font-semibold mb-2">
+                                    Enter ID or payment code
                                 </p>
                                 <div className="flex gap-2">
                                     <Input
-                                        placeholder="Enter ID or payment code"
+                                        placeholder="Search"
                                         value={manualCode}
                                         onChange={(e) =>
                                             setManualCode(e.target.value)
@@ -526,7 +526,7 @@ const Checkin = () => {
                                         }
                                     </p>
                                     <p className="text-sm text-muted-foreground">
-                                        Remaining
+                                        Waiting 
                                     </p>
                                 </div>
                             </div>
