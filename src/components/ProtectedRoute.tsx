@@ -9,10 +9,10 @@ interface ProtectedRouteProps {
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
-  if (!isAuthenticated) {
-    // إذا مش مسجل دخول، روح على صفحة Login
-    return <Navigate to="/login" replace />;
-  }
+  // if (!isAuthenticated) {
+  //   // إذا مش مسجل دخول، روح على صفحة Login
+  //   return <Navigate to="/login" replace />;
+  // }
 
   return <>{children}</>;
 };

@@ -252,7 +252,7 @@ const Index = () => {
       <footer className="py-8 border-t">
         <div className="container mx-auto px-4 text-center">
           <p className="text-muted-foreground text-sm">
-            © 2024 IEEE Beni-Suef Student Branch. All rights reserved.
+            © 2025 IEEE Beni-Suef Student Branch. All rights reserved.
           </p>
         </div>
       </footer>
