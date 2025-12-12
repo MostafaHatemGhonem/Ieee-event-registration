@@ -132,9 +132,11 @@ const Register = () => {
         }
 
         if (step === 4) {
-            // كود الدفع إجباري (Backend يتطلبه)
-            if (!formData.paymentCode) {
-                newErrors.paymentCode = "يرجى إدخال كود الدفع";
+            // رقم المحفظة 11 رقم فقط
+            if (!formData.paymentCode || formData.paymentCode.length !== 11) {
+                newErrors.paymentCode = "يرجى إدخال 11 رقم بالضبط";
+            } else if (!/^\d{11}$/.test(formData.paymentCode)) {
+                newErrors.paymentCode = "يجب أن يحتوي على أرقام فقط";
             }
             // صورة الدفع إجبارية
             if (!paymentFile) {
@@ -598,13 +600,13 @@ const Register = () => {
                                         {formData.faculty === "أخرى" && (
                                             <div>
                                                 <Label htmlFor="customFaculty">
-                                                    اسم الكلية *
+                                                    Faculty Name *
                                                 </Label>
                                                 <Input
                                                     id="customFaculty"
                                                     type="text"
                                                     dir="rtl"
-                                                    placeholder="أدخل اسم الكلية"
+                                                    placeholder="Enter Faculty Name"
                                                     value={customFaculty}
                                                     onChange={(e) => {
                                                         setCustomFaculty(
@@ -636,7 +638,7 @@ const Register = () => {
                                             </div>
                                         )}
                                         <div>
-                                            <Label>السنة الدراسية *</Label>
+                                            <Label>Academic Year *</Label>
                                             <Select
                                                 value={formData.academicYear}
                                                 onValueChange={(v) =>
@@ -685,31 +687,61 @@ const Register = () => {
                                     </div>
 
                                     <div className="space-y-4">
+                                        {/* Payment Numbers - Simple */}
+                                        <div className="bg-gray-50 dark:bg-gray-900 border rounded-lg p-4 mb-4">
+                                            <h3 className="font-semibold mb-3 flex items-center gap-2">
+                                                <CreditCard className="w-4 h-4" />
+                                                Payment Numbers
+                                            </h3>
+                                            
+                                            <div className="space-y-2">
+                                                <a 
+                                                    href="tel:01554104799"
+                                                    className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded border hover:border-blue-400 transition-colors"
+                                                >
+                                                    <span className="text-sm font-medium">Instapay</span>
+                                                    <span className="font-mono font-bold text-blue-600" dir="ltr">01554104799</span>
+                                                </a>
+                                                
+                                                <a 
+                                                    href="tel:01097587564"
+                                                    className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded border hover:border-red-400 transition-colors"
+                                                >
+                                                    <span className="text-sm font-medium">Vodafone Cash</span>
+                                                    <span className="font-mono font-bold text-red-600" dir="ltr">01097587564</span>
+                                                </a>
+                                            </div>
+                                        </div>
+
                                         <div>
                                             <Label htmlFor="paymentCode">
-                                                كود الدفع *
+                                                Wallet Number (11 digits) *
                                             </Label>
                                             <Input
                                                 id="paymentCode"
-                                                placeholder="أدخل كود الدفع"
+                                                type="tel"
+                                                placeholder="أدخل 11 رقم فقط"
                                                 value={formData.paymentCode}
-                                                onChange={(e) =>
-                                                    updateField(
-                                                        "paymentCode",
-                                                        e.target.value
-                                                    )
-                                                }
+                                                maxLength={11}
+                                                onChange={(e) => {
+                                                    const value = e.target.value.replace(/\D/g, '');
+                                                    updateField('paymentCode', value);
+                                                }}
                                                 className={
                                                     errors.paymentCode
                                                         ? "border-destructive"
                                                         : ""
                                                 }
+                                                dir="ltr"
                                             />
                                             {errors.paymentCode && (
                                                 <p className="text-sm text-destructive mt-1">
                                                     {errors.paymentCode}
                                                 </p>
                                             )}
+                                            <p className="text-2xs text-muted-foreground mt-1">
+                                                الرقم اللي بعتت منه الفلوس
+                                            </p>
                                         </div>
 
                                         {/* Bus Question - Enhanced */}
@@ -731,11 +763,11 @@ const Register = () => {
                                                         <Label
                                                             htmlFor="isNeedBus"
                                                             className="cursor-pointer font-semibold text-base">
-                                                            هل تحتاج إلى الباص للوصول للفعالية؟
+                                                            Do you need a bus to get to the event?
                                                         </Label>
                                                     </div>
                                                     <p className="text-sm text-muted-foreground mr-8 mt-1">
-                                                        سيتم توفير مواصلات مجانية من وإلى مكان الفعالية
+                                                        Will be provided free transportation from and to the event location.
                                                     </p>
                                                 </div>
                                             </div>
