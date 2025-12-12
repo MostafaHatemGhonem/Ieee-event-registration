@@ -80,10 +80,10 @@ export const FACULTIES = [
 ];
 
 export const ACADEMIC_YEARS = [
-    "السنة الأولى",
-    "السنة الثانية",
-    "السنة الثالثة",
-    "السنة الرابعة",
-    "السنة الخامسة",
-    "خريج",
+    "First Year",
+    "Second Year",
+    "Third Year",
+    "Fourth Year",
+    "Fifth Year",
+    "Graduate",
 ];

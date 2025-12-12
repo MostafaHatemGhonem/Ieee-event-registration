@@ -651,7 +651,7 @@ const Register = () => {
                                                             ? "border-destructive"
                                                             : ""
                                                     }>
-                                                    <SelectValue placeholder="اختر السنة الدراسية" />
+                                                    <SelectValue placeholder="Select Academic Year" />
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     {ACADEMIC_YEARS.map(
@@ -718,7 +718,7 @@ const Register = () => {
                                             <Input
                                                 id="paymentCode"
                                                 type="tel"
-                                                placeholder="أدخل 11 رقم فقط"
+                                                placeholder="Enter 11 digits"
                                                 value={formData.paymentCode}
                                                 maxLength={11}
                                                 onChange={(e) => {
@@ -738,12 +738,12 @@ const Register = () => {
                                                 </p>
                                             )}
                                             <p className="text-2xs text-muted-foreground mt-1">
-                                                الرقم اللي بعتت منه الفلوس
+                                               The number from which you sent the money
                                             </p>
                                         </div>
 
                                         <div>
-                                            <Label>صورة إيصال الدفع *</Label>
+                                            <Label>Payment Screenshot *</Label>
                                             <div
                                                 className={`mt-2 border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
                                                     errors.paymentScreenshot
@@ -793,7 +793,7 @@ const Register = () => {
                                                     <>
                                                         <Upload className="w-12 h-12 mx-auto mb-2 text-muted-foreground" />
                                                         <p className="text-muted-foreground">
-                                                            اضغط لرفع الصورة
+                                                            Click to upload
                                                         </p>
                                                         <p className="text-xs text-muted-foreground mt-1">
                                                             PNG, JPG up to 10MB
