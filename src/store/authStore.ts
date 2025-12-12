@@ -30,10 +30,16 @@ export const useAuthStore = create<AuthState>()(
 
       login: async (email: string, password: string) => {
         try {
+          // Send both username and email to match backend expectations
+          const payload = { username: email, email, password };
+
           const response = await fetch(`${API_BASE_URL}/Auth/login`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username: email, password }), // Backend expects 'username' not 'email'
+            headers: { 
+              'Content-Type': 'application/json',
+              'Accept': 'application/json, text/plain'
+            },
+            body: JSON.stringify(payload),
           });
 
           if (!response.ok) {
@@ -52,7 +58,7 @@ export const useAuthStore = create<AuthState>()(
           }
 
           const contentType = response.headers.get("content-type");
-          let data;
+          let data: any;
           
           if (contentType && contentType.indexOf("application/json") !== -1) {
             data = await response.json();
@@ -62,14 +68,17 @@ export const useAuthStore = create<AuthState>()(
             data = { token, user: { id: email, email, name: email, role: 'admin' } };
           }
           
+          const token = data.token || data.accessToken || data.jwtToken || data;
+          const user = data.user || { id: email, email, name: email, role: 'admin' };
+
           set({
-            user: data.user,
-            token: data.token,
+            user,
+            token,
             isAuthenticated: true,
           });
 
           // حفظ التوكن في localStorage
-          localStorage.setItem('auth_token', data.token);
+          localStorage.setItem('auth_token', token);
         } catch (error) {
           throw error;
         }

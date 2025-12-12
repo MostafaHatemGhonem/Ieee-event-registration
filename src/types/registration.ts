@@ -57,6 +57,7 @@ export const GOVERNORATES = [
 ];
 
 export const FACULTIES = [
+
     "كلية الهندسة",
     "كلية العلوم",
     "كلية الحاسبات والمعلومات",
@@ -70,6 +71,7 @@ export const FACULTIES = [
     "كلية الحقوق",
     "كلية التربية",
     "أخرى",
+
 ];
 
 export const ACADEMIC_YEARS = [

@@ -196,6 +196,7 @@ export async function getAllRegistrations(): Promise<RegistrationData[]> {
         createdAt: item.createdAt || "",
         rejectionReason: item.rejectionReason,
     }));
+
 }
 
 export async function approveRegistration(id: string): Promise<unknown> {
