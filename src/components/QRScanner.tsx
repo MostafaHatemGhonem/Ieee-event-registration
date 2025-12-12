@@ -9,12 +9,10 @@ interface QRScannerProps {
 export function QRScanner({ onScan, onError }: QRScannerProps) {
   const scannerRef = useRef<Html5Qrcode | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [hasPermission, setHasPermission] = useState<boolean | null>(null);
 
   useEffect(() => {
-    // Unique ID for the container to avoid conflicts
     const qrcodeRegionId = "html5qr-code-full-region";
-    
-    // Cleanup function to handle strict mode double-mount
     let isMounted = true;
 
     const startScanner = async () => {
@@ -22,22 +20,31 @@ export function QRScanner({ onScan, onError }: QRScannerProps) {
         // If scanner instance exists, clear it first
         if (scannerRef.current) {
           try {
-            await scannerRef.current.stop();
+            if (scannerRef.current.isScanning) {
+                await scannerRef.current.stop();
+            }
             await scannerRef.current.clear();
           } catch (e) {
-            // Ignore stop errors
+            console.warn("Cleanup warning:", e);
           }
         }
 
         const scanner = new Html5Qrcode(qrcodeRegionId);
         scannerRef.current = scanner;
 
-        // Mobile-friendly config
+        // Check if cameras are supported
+        try {
+            await Html5Qrcode.getCameras();
+            setHasPermission(true);
+        } catch (e) {
+            setHasPermission(false);
+            throw new Error("Camera permission denied or no cameras found");
+        }
+
         const config = {
           fps: 10,
           qrbox: (viewfinderWidth: number, viewfinderHeight: number) => {
-            // Logic to have a square box that fits well
-            const minEdgePercentage = 0.7; // 70%
+            const minEdgePercentage = 0.7;
             const minEdgeSize = Math.min(viewfinderWidth, viewfinderHeight);
             const qrboxSize = Math.floor(minEdgeSize * minEdgePercentage);
             return {
@@ -60,39 +67,50 @@ export function QRScanner({ onScan, onError }: QRScannerProps) {
             }
           },
           (errorMessage) => {
-            // access errors or read errors
-            // console.warn(errorMessage);
+            // ignore scan errors
           }
         );
       } catch (err: any) {
         if (isMounted) {
-          console.error("Failed to start scanner:", err);
-          const msg = err?.message || "Failed to access camera";
+          console.error("Scanner error:", err);
+          const msg = err?.message || "Failed to access camera. Please allow permissions.";
           setError(msg);
           if (onError) onError(msg);
         }
       }
     };
 
-    // Small timeout to ensure DOM is ready and previous instances are cleaned
+    // Delay start to ensure DOM is fully rendered
     const timer = setTimeout(() => {
         startScanner();
-    }, 100);
+    }, 500);
 
     return () => {
       isMounted = false;
       clearTimeout(timer);
       if (scannerRef.current) {
-        scannerRef.current.stop().catch(err => console.error("Failed to stop scanner", err));
-        scannerRef.current.clear().catch(err => console.error("Failed to clear scanner", err));
+        try {
+            if (scannerRef.current.isScanning) {
+                scannerRef.current.stop().catch(e => console.error(e));
+            }
+            scannerRef.current.clear().catch(e => console.error(e));
+        } catch (e) {
+            console.error("Unmount error", e);
+        }
       }
     };
   }, [onScan, onError]);
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-64 bg-muted text-destructive text-center p-4">
-        <p>{error}</p>
+      <div className="flex flex-col items-center justify-center h-64 bg-muted text-destructive text-center p-4 rounded-lg border-2 border-destructive/20">
+        <p className="font-semibold mb-2">Camera Error</p>
+        <p className="text-sm mb-4">{error}</p>
+        {!hasPermission && (
+            <p className="text-xs text-muted-foreground">
+                Please check your browser settings and allow camera access.
+            </p>
+        )}
       </div>
     );
   }
@@ -103,7 +121,9 @@ export function QRScanner({ onScan, onError }: QRScannerProps) {
       style={{ 
         width: '100%',
         maxWidth: '500px',
+        minHeight: '300px', // Force height
         margin: '0 auto',
+        backgroundColor: '#000', // Black background while loading
         borderRadius: '8px',
         overflow: 'hidden'
       }}
