@@ -37,7 +37,7 @@ async function apiRequest<T>(
     const config: RequestInit = {
         ...options,
         headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/json; charset=utf-8",
             ...(token ? { Authorization: `Bearer ${token}` } : {}),
             ...options.headers,
         },
@@ -110,7 +110,9 @@ export async function submitRegistration(
         if (value !== undefined && value !== null && (typeof value === 'boolean' || value !== "")) {
             // Use mapped field name if exists, otherwise use original
             const backendKey = fieldMapping[key] || key;
-            formData.append(backendKey, value.toString());
+            // Ensure proper encoding for Arabic text - FormData handles UTF-8 automatically
+            const stringValue = typeof value === 'string' ? value : value.toString();
+            formData.append(backendKey, stringValue);
         }
     });
 
@@ -267,11 +269,15 @@ export async function sendRegistrationConfirmationEmail(
         method: "POST",
         body: JSON.stringify({
             email: registration.email,
-            fullNameArabic: registration.fullNameArabic,
-            fullNameEnglish: registration.fullNameEnglish,
-            faculty: registration.college,
-            phone: registration.phone,
-            nationalId: registration.nationalId,
+            fullNameArabic: registration.fullNameArabic || "",
+            fullNameEnglish: registration.fullNameEnglish || "",
+            faculty: registration.college || registration.faculty || "",
+            phone: registration.phone || "",
+            nationalId: registration.nationalId || "",
+            governorate: registration.governorate || "",
+            academicYear: registration.academicYear || "",
+            age: registration.age || "",
+            gender: registration.gender || "",
         }),
     });
 }
@@ -283,11 +289,14 @@ export async function sendApprovalEmail(
         method: "POST",
         body: JSON.stringify({
             email: registration.email,
-            fullNameArabic: registration.fullNameArabic,
-            fullNameEnglish: registration.fullNameEnglish,
-            faculty: registration.college,
-            phone: registration.phone,
+            fullNameArabic: registration.fullNameArabic || "",
+            fullNameEnglish: registration.fullNameEnglish || "",
+            faculty: registration.college || registration.faculty || "",
+            phone: registration.phone || "",
+            nationalId: registration.nationalId || "",
             attendeeId: registration.id,
+            governorate: registration.governorate || "",
+            academicYear: registration.academicYear || "",
         }),
     });
 }
