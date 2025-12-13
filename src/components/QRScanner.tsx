@@ -17,6 +17,9 @@ export function QRScanner({ onScan, onError }: QRScannerProps) {
 
     const startScanner = async () => {
       try {
+        setError(null);
+        setHasPermission(null);
+
         // If scanner instance exists, clear it first
         if (scannerRef.current) {
           try {
@@ -31,15 +34,6 @@ export function QRScanner({ onScan, onError }: QRScannerProps) {
 
         const scanner = new Html5Qrcode(qrcodeRegionId);
         scannerRef.current = scanner;
-
-        // Check if cameras are supported
-        try {
-            await Html5Qrcode.getCameras();
-            setHasPermission(true);
-        } catch (e) {
-            setHasPermission(false);
-            throw new Error("Camera permission denied or no cameras found");
-        }
 
         const config = {
           fps: 10,
@@ -72,24 +66,32 @@ export function QRScanner({ onScan, onError }: QRScannerProps) {
             // ignore scan errors
           }
         );
-      } catch (err: any) {
+
+        if (isMounted) {
+          setHasPermission(true);
+        }
+      } catch (err: unknown) {
         if (isMounted) {
           console.error("Scanner error:", err);
-          const msg = err?.message || "Failed to access camera. Please allow permissions.";
+          const errObj = err as { name?: unknown; message?: unknown } | null | undefined;
+          const errName = typeof errObj?.name === "string" ? errObj.name : undefined;
+          if (errName === "NotAllowedError" || errName === "PermissionDeniedError") {
+            setHasPermission(false);
+          }
+          const msg =
+            (typeof errObj?.message === "string" && errObj.message) ||
+            (err instanceof Error ? err.message : "") ||
+            "Failed to access camera. Please allow permissions.";
           setError(msg);
           if (onError) onError(msg);
         }
       }
     };
 
-    // Delay start to ensure DOM is fully rendered
-    const timer = setTimeout(() => {
-        startScanner();
-    }, 500);
+    startScanner();
 
     return () => {
       isMounted = false;
-      clearTimeout(timer);
       if (scannerRef.current) {
         try {
             if (scannerRef.current.isScanning) {
