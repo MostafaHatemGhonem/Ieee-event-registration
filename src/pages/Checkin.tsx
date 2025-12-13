@@ -93,8 +93,8 @@ const Checkin = () => {
         // If neither format matched
         if (!nationalId && !attendeeId) {
             toast({
-                title: "خطأ في الرمز",
-                description: "رمز QR غير صالح. يرجى التأكد من استخدام الرمز الصحيح للفعالية",
+                title: "Invalid QR Code",
+                description: `Format not recognized. Scanned data: ${qrData.substring(0, 50)}${qrData.length > 50 ? '...' : ''}`,
                 variant: "destructive",
             });
             console.log("=== END DEBUG (invalid format) ===");

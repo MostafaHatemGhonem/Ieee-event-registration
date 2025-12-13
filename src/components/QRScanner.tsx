@@ -53,13 +53,16 @@ export function QRScanner({ onScan, onError }: QRScannerProps) {
             };
           },
           aspectRatio: 1.0,
-          formatsToSupport: [ Html5QrcodeSupportedFormats.QR_CODE ]
+          useBarCodeDetectorIfSupported: true,
         };
 
         if (!isMounted) return;
 
         await scanner.start(
-          { facingMode: "environment" },
+          { 
+              facingMode: "environment",
+              advanced: [ { zoom: 2.0 } ] as any // Try to request zoom/focus if possible
+          },
           config,
           (decodedText) => {
             if (isMounted) {
