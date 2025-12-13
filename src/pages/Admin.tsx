@@ -793,12 +793,12 @@ const Admin = () => {
                         {/* Status Management Buttons */}
                         {(selectedReg?.status || "").toLowerCase() === "pending" && (
                             <>
-                                <Button
+                                {/* <Button
                                     variant="outline"
                                     onClick={() => setShowRejectDialog(true)}>
                                     <XCircle className="w-4 h-4 mr-2" />
                                     Reject
-                                </Button>
+                                </Button> */}
                                 <Button
                                     variant="default"
                                     className="bg-success hover:bg-success/90"
@@ -810,7 +810,7 @@ const Admin = () => {
                         )}
 
                         {/* Revert to Pending for Approved/Rejected */}
-                        {((selectedReg?.status || "").toLowerCase() === "approved" ||
+                        {/* {((selectedReg?.status || "").toLowerCase() === "approved" ||
                             (selectedReg?.status || "").toLowerCase() === "rejected") && (
                             <Button
                                 variant="outline"
@@ -855,7 +855,7 @@ const Admin = () => {
                                 <Clock className="w-4 h-4 mr-2" />
                                 Revert to Pending
                             </Button>
-                        )}
+                        )} */}
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
