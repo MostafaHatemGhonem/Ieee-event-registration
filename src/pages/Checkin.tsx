@@ -324,9 +324,8 @@ const Checkin = () => {
                                                     err
                                                 );
                                                 toast({
-                                                    title: "خطأ في الكاميرا",
-                                                    description:
-                                                        "تأكد من السماح بالوصول للكاميرا",
+                                                    title: "Camera Error / خطأ في الكاميرا",
+                                                    description: typeof err === 'string' ? err : (err as any)?.message || "Unknown error",
                                                     variant: "destructive",
                                                 });
                                                 setUseCamera(false); // Close camera on error

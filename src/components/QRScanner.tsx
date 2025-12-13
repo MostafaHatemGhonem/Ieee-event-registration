@@ -60,8 +60,7 @@ export function QRScanner({ onScan, onError }: QRScannerProps) {
 
         await scanner.start(
           { 
-              facingMode: "environment",
-              advanced: [ { zoom: 2.0 } ] as any // Try to request zoom/focus if possible
+              facingMode: "environment"
           },
           config,
           (decodedText) => {
