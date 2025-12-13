@@ -203,7 +203,7 @@ const Register = () => {
 
             toast({
                 title: "Registration successful!",
-                description: "Your request will be reviewed and a confirmation email will be sent.",
+                description: "Your request will be reviewed and a confirmation email will be sent. If you don’t see it, please check your Spam/Junk folder.",
             });
         } catch (error) {
             console.error("Registration error:", error);
@@ -235,6 +235,9 @@ const Register = () => {
                             </h2>
                             <p className="text-muted-foreground mb-4">
                                 Thank you for registering for the TIME event. Your application will be reviewed by the relevant committee and a confirmation email will be sent.
+                            </p>
+                            <p className="text-muted-foreground mb-6 text-sm">
+                                Note: If you don’t receive the email, please check your Spam/Junk folder and mark it as “Not spam”.
                             </p>
 
                             {/* WhatsApp Groups */}

@@ -73,7 +73,7 @@ const Index = () => {
                   Admin Login
                 </Button>
               </Link>
-              <a href="" download>
+              <a href="../../app-release.apk" download>
                 <Button variant="outline" size="xl" className="gap-2 w-full sm:w-auto">
                   <Download className="w-5 h-5" />
                   Download App
