@@ -8,6 +8,7 @@ import {
   Lightbulb, Rocket, TrendingUp, Award, Globe,
   MessageSquare, FileText, Network, Zap, Download
 } from 'lucide-react';
+import { isRegistrationOpen } from '@/lib/registration';
 
 const Index = () => {
   return (
@@ -60,7 +61,7 @@ const Index = () => {
               <span className="font-semibold text-foreground"> TIME = Real Experience. Real Expertise.</span>
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/register">
                 <Button variant="gradient" size="xl" className="gap-2 w-full sm:w-auto pulse-glow">
                   Register Now
@@ -94,7 +95,7 @@ const Index = () => {
               </div>
               <h3 className="font-semibold text-lg mb-2">Event Date</h3>
               <p className="text-muted-foreground">decemper 17 2025</p>
-              <p className="text-sm text-accent font-medium mt-1">Registration is open</p>
+              <p className="text-sm text-accent font-medium mt-1">{isRegistrationOpen ? 'Registration is open' : 'Registration is closed'}</p>
             </div>
             
             <div className="card-elevated p-6 text-center animate-slide-up hover:scale-105 transition-transform" style={{ animationDelay: '0.2s' }}>
