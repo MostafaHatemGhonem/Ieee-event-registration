@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Register from "./pages/Register";
+import RegistrationClosed from "./pages/RegistrationClosed";
+import { isRegistrationOpen } from "./lib/registration";
 import Login from "./pages/Login";
 import Admin from "./pages/Admin";
 import Checkin from "./pages/Checkin";
@@ -21,7 +23,10 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/register" element={<Register />} />
+          <Route
+            path="/register"
+            element={isRegistrationOpen ? <Register /> : <RegistrationClosed />}
+          />
           <Route path="/login" element={<Login />} />
           <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
           <Route path="/checkin" element={<ProtectedRoute><Checkin /></ProtectedRoute>} />

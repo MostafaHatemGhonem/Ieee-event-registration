@@ -1,3 +1,11 @@
+// Toggle registration by setting Vite env var `VITE_REGISTRATION_OPEN` to `true`.
+// Default is closed when not set.
+export const isRegistrationOpen =
+  typeof import.meta !== "undefined" &&
+  import.meta.env &&
+  import.meta.env.VITE_REGISTRATION_OPEN === "true";
+
+// You can also override programmatically if needed in future.
 import { RegistrationData } from '@/types/registration';
 
 // Mock storage for demo - will be replaced with Supabase
